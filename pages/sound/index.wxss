@@ -1,16 +1,22 @@
-.sound-page { min-height: 100vh; }
-.topbar-label { color: var(--text-soft); font-size: 24rpx; letter-spacing: 2rpx; }
+@import '../../styles/night-theme.wxss';
+
+/* 页内覆盖夜喵主题（不动 app.wxss，避免影响呼吸页 Skyline） */
+.sound-page { min-height: 100vh; color: var(--night-text); background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); --accent: #eccb8a; --link: #eccb8a; }
+.sound-page .topbar-label { color: var(--night-muted); font-size: 24rpx; letter-spacing: 2rpx; }
 .topbar-spacer { width: 80rpx; }
-.sound-content { padding: 56rpx 48rpx; }
-.sound-list { margin-top: 58rpx; border-top: 1rpx solid var(--line); }
-.sound-row { display: flex; align-items: center; width: 100%; min-height: 118rpx; border-bottom: 1rpx solid var(--line); text-align: left; }
-.sound-glyph { display: flex; align-items: center; justify-content: center; width: 68rpx; height: 68rpx; margin-right: 22rpx; border: 1rpx solid var(--line); border-radius: 50%; color: var(--text-faint); font-size: 30rpx; }
-.sound-copy { flex: 1; }.sound-copy text { display: block; }.sound-copy text:last-child { margin-top: 8rpx; color: var(--text-faint); font-size: 22rpx; }.sound-check { color: var(--accent); font-size: 32rpx; }
-.sound-row.is-selected .sound-glyph { color: var(--accent); border-color: rgba(204, 227, 194, .4); box-shadow: 0 0 24rpx rgba(204, 227, 194, .12); }
-.player-bar { display: flex; align-items: center; gap: 20rpx; margin-top: 52rpx; padding: 22rpx; border: 1rpx solid var(--line); border-radius: 8rpx; background: rgba(255,255,255,.03); }.play-button { display: flex; align-items: center; justify-content: center; width: 72rpx; height: 72rpx; border-radius: 50%; color: #0a1b19; background: var(--accent); }.player-wave { display: flex; align-items: center; gap: 5rpx; flex: 1; height: 50rpx; }.player-wave .wave-line { width: 3rpx; height: 20rpx; background: rgba(204,227,194,.7); animation: wave 1.1s ease-in-out infinite alternate; }.player-wave .wave-line:nth-child(2) { animation-delay: -.8s; height: 34rpx; }.player-wave .wave-line:nth-child(3) { animation-delay: -.5s; height: 24rpx; }.player-wave .wave-line:nth-child(4) { animation-delay: -.2s; height: 42rpx; }.player-wave .wave-line:nth-child(5) { animation-delay: -.6s; height: 27rpx; }.player-wave .wave-line:nth-child(6) { animation-delay: -.9s; height: 36rpx; }.player-wave .wave-line:nth-child(7) { animation-delay: -.3s; height: 18rpx; }.player-status { color: var(--text-faint); font-size: 21rpx; }.volume-row { display: flex; align-items: center; gap: 14rpx; margin-top: 28rpx; color: var(--text-faint); font-size: 22rpx; }.volume-row slider { flex: 1; }
+.sound-content { padding: 56rpx 48rpx; animation: rise-in 300ms var(--ease-out) both; }
+.sound-page .page-title { display: block; color: var(--night-text); }
+.sound-page .page-copy { display: block; margin-top: 16rpx; color: var(--night-muted); }
+.sound-list { display: flex; flex-direction: column; gap: 16rpx; margin-top: 52rpx; border-top: 0; }
+.sound-row { display: flex; align-items: center; width: 100%; min-height: max(120rpx, 44px); padding: 16rpx 24rpx; border: 1rpx solid var(--night-hairline); border-radius: 28rpx; background: var(--night-panel); text-align: left; }
+.sound-row.is-selected { border-color: var(--night-gold-line); background: rgba(232, 200, 135, .08); box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, .14); }
+.sound-glyph { display: flex; align-items: center; justify-content: center; width: 68rpx; height: 68rpx; margin-right: 22rpx; border: 1rpx solid var(--night-hairline); border-radius: 50%; color: var(--night-faint); font-size: 30rpx; }
+.sound-copy { flex: 1; }.sound-copy text { display: block; }.sound-copy text:last-child { margin-top: 8rpx; color: var(--night-faint); font-size: 22rpx; }.sound-check { color: var(--night-gold); font-size: 32rpx; }
+.sound-row.is-selected .sound-glyph { color: var(--night-gold); border-color: rgba(232, 200, 135, .45); box-shadow: 0 0 24rpx rgba(232, 200, 135, .14); }
+.player-bar { display: flex; align-items: center; gap: 20rpx; margin-top: 52rpx; padding: 22rpx; border: 1rpx solid var(--night-hairline); border-radius: 28rpx; background: var(--night-panel); }.play-button { display: flex; align-items: center; justify-content: center; width: max(88rpx, 44px); height: max(88rpx, 44px); border-radius: 50%; color: #24312c; background: linear-gradient(135deg, #f0d49a, #e2bd76); box-shadow: 0 6rpx 20rpx rgba(232, 200, 135, .24); }.player-wave { display: flex; align-items: center; gap: 5rpx; flex: 1; height: 50rpx; }.player-wave .wave-line { width: 3rpx; height: 20rpx; background: rgba(232, 200, 135, .6); animation: wave 1.1s ease-in-out infinite alternate; }.player-wave .wave-line:nth-child(2) { animation-delay: -.8s; height: 34rpx; }.player-wave .wave-line:nth-child(3) { animation-delay: -.5s; height: 24rpx; }.player-wave .wave-line:nth-child(4) { animation-delay: -.2s; height: 42rpx; }.player-wave .wave-line:nth-child(5) { animation-delay: -.6s; height: 27rpx; }.player-wave .wave-line:nth-child(6) { animation-delay: -.9s; height: 36rpx; }.player-wave .wave-line:nth-child(7) { animation-delay: -.3s; height: 18rpx; }.player-status { color: var(--night-faint); font-size: 21rpx; }.volume-row { display: flex; align-items: center; gap: 14rpx; margin-top: 28rpx; color: var(--night-faint); font-size: 22rpx; }.volume-row slider { flex: 1; }
 @keyframes wave { from { transform: scaleY(.6); opacity: .5; } to { transform: scaleY(1); opacity: 1; } }
-.timer-section { margin-top: 42rpx; padding-top: 30rpx; border-top: 1rpx solid var(--line); }
-.timer-label, .timer-note { display: block; color: var(--text-faint); font-size: 22rpx; }
+.timer-section { margin-top: 42rpx; padding-top: 30rpx; border-top: 1rpx solid var(--night-hairline); }
+.timer-label, .timer-note { display: block; color: var(--night-faint); font-size: 22rpx; }
 .timer-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12rpx; margin: 18rpx 0 14rpx; }
-.timer-options button { min-height: 78rpx; border: 1rpx solid var(--line); border-radius: 8rpx; color: var(--text-soft); font-size: 23rpx; }
-.timer-options button.is-selected { color: var(--text-main); border-color: rgba(204, 227, 194, .45); background: rgba(204, 227, 194, .08); }
+.timer-options button { min-height: max(84rpx, 44px); border: 1rpx solid var(--night-hairline); border-radius: 999rpx; color: var(--night-muted); font-size: 23rpx; }
+.timer-options button.is-selected { color: #24312c; border-color: transparent; background: linear-gradient(135deg, #f0d49a, #e2bd76); box-shadow: 0 6rpx 20rpx rgba(232, 200, 135, .2); }

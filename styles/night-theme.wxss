@@ -1,0 +1,37 @@
+/* ============================================================
+   夜喵 · 二级页共享主题
+   深空青玻璃面板 + 暖金行动色；动效克制丝滑（≤360ms）
+   仅被二级页 @import；不动 app.wxss（呼吸页 Skyline 依赖其全局类）
+   ============================================================ */
+page {
+  --night-gold: #eccb8a;
+  --night-text: #f1ebdd;
+  --night-muted: #a8b9b6;
+  --night-faint: #7d8f8d;
+  --night-panel: rgba(16, 36, 38, .5);
+  --night-panel-strong: rgba(11, 31, 33, .92);
+  --night-hairline: rgba(168, 193, 183, .14);
+  --night-gold-line: rgba(232, 200, 135, .22);
+  --night-danger: #e99898;
+  --ease-out: cubic-bezier(.22, .61, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.2, .64, 1);
+}
+
+.is-pressed {
+  opacity: .72;
+  transform: scale(.97);
+}
+
+/* 返回键 80rpx（40px）在小屏低于 44px 触控标准，二级页统一放大 */
+.page-shell .icon-button--back {
+  width: max(88rpx, 44px);
+  min-width: max(88rpx, 44px);
+  max-width: max(88rpx, 44px);
+  height: max(88rpx, 44px);
+}
+
+@keyframes rise-in { from { opacity: 0; transform: translateY(14rpx); } }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(.96); } }
+@keyframes veil-in { from { opacity: 0; } }
+@keyframes sheet-up { from { opacity: 0; transform: translateY(64rpx); } }

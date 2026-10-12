@@ -1,13 +1,14 @@
 <view class="page-shell focus-page">
-  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" aria-label="返回呼吸首页"><view class="back-arrow"></view></button><text class="topbar-label">关灯</text></view>
+  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" hover-class="is-pressed" aria-label="返回呼吸首页"><view class="back-arrow"></view></button><text class="topbar-label">关灯</text></view>
   <view class="focus-content">
     <text class="page-title">准备结束今天的信息输入。</text>
-    <text class="page-copy">小程序不能替你修改系统设置，\n但可以陪你一步步把环境调安静。</text>
+    <text class="page-copy">小程序不能替你修改系统设置，</text>
+    <text class="page-copy page-copy--tight">但可以陪你一步步把环境调安静。</text>
     <view class="focus-steps">
       <view wx:for="{{steps}}" wx:key="title" class="focus-step"><view class="focus-step__number">{{index + 1}}</view><view><text class="focus-step__title">{{item.title}}</text><text class="focus-step__detail">{{item.detail}}</text></view></view>
     </view>
     <text wx:if="{{message}}" class="focus-message">{{message}}</text>
-    <button wx:if="{{!started}}" class="primary-button" bindtap="startFocus">开始关灯</button>
-    <button wx:else class="primary-button" bindtap="returnToBreathe">回到呼吸空间</button>
+    <button wx:if="{{!started}}" class="primary-button" bindtap="startFocus" hover-class="is-pressed">开始关灯</button>
+    <button wx:else class="primary-button" bindtap="returnToBreathe" hover-class="is-pressed">回到呼吸空间</button>
   </view>
 </view>

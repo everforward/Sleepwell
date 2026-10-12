@@ -1,12 +1,43 @@
+@import '../../styles/night-theme.wxss';
+
 page { background: #061719; }
-.ns-page { height: 100vh; display: flex; flex-direction: column; background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); color: #f1ebdd; letter-spacing: 0; }
+.ns-page { height: 100vh; display: flex; flex-direction: column; background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); color: var(--night-text); letter-spacing: 0; }
 .ns-page button { margin: 0; padding: 0; background: transparent; color: inherit; font-size: 14px; line-height: 1.6; border-radius: 0; }
 .ns-top { position: relative; flex-shrink: 0; text-align: center; }
-.ns-top > text { position: absolute; bottom: 16px; left: 70px; right: 70px; font-size: 15px; }
-.ns-page .ns-back { position: absolute; left: 16px; bottom: 4px; width: 44px; max-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }.ns-back image { width: 20px; height: 20px; }
-.ns-scroll { flex: 1; height: 0; width: 100%; }.ns-content { padding: 32rpx 32rpx calc(48rpx + env(safe-area-inset-bottom)); }
-.ns-title { display: block; font-size: 24px; line-height: 1.5; margin-bottom: 36rpx; font-family: SimSun, serif; }
-.ns-section { margin-bottom: 36rpx; }.ns-section-title { display: block; color: #ebc979; font-size: 18px; line-height: 1.6; padding: 16rpx 0; border-bottom: 1px solid #334647; }.ns-subheading { display: block; color: #a8b9b6; font-size: 12px; padding: 24rpx 0 8rpx; }
-.ns-page .ns-row { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; width: 100%; max-width: 100%; min-height: 104rpx; padding: 20rpx 0; border-bottom: 1px solid rgba(168,185,182,.12); text-align: left; font-size: 14px; }.ns-row > view { flex: 1; min-width: 0; }.ns-row switch { flex-shrink: 0; }.ns-value { flex-shrink: 0; max-width: 48%; color: #a8b9b6; text-align: right; font-size: 13px; word-break: break-all; }.ns-help { display: block; font-size: 12px; line-height: 1.8; color: #a8b9b6; margin-top: 6rpx; }
-.ns-memory { margin-top: 28rpx; padding: 16rpx 24rpx; background: #102426; border-left: 3px solid #ebc979; }.ns-memory-title { font-size: 18px; color: #ebc979; }.ns-memory .ns-row { border: 0; }.ns-memory-actions { display: flex; justify-content: space-between; gap: 16rpx; }.ns-memory-actions button { width: auto; max-width: 50%; min-height: 44px; }.ns-page .ns-danger { color: #e99898; }
-.ns-overlay { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; background: rgba(0,8,9,.7); }.ns-sheet { width: 100%; max-height: 82vh; padding-bottom: env(safe-area-inset-bottom); background: #102426; border-radius: 16rpx 16rpx 0 0; }.ns-sheet-heading { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 32rpx; font-size: 20px; }.ns-sheet-heading button { width: 44px; max-width: 44px; height: 44px; }.ns-sheet-heading image { width: 20px; height: 20px; }.ns-sheet-scroll { max-height: 62vh; }.ns-sheet-inner { padding: 0 32rpx 40rpx; }.ns-full { display: block; white-space: pre-wrap; word-break: break-all; font-size: 14px; line-height: 1.9; margin: 24rpx 0; }
+.ns-top > text { position: absolute; bottom: 16px; left: 70px; right: 70px; font-size: 15px; letter-spacing: 2rpx; }
+.ns-page .ns-back { position: absolute; left: 16px; bottom: 4px; width: 44px; max-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }.ns-back image { width: 20px; height: 20px; }
+.ns-scroll { flex: 1; height: 0; width: 100%; }.ns-content { padding: 24rpx 32rpx calc(48rpx + env(safe-area-inset-bottom)); }
+.ns-title { display: block; font-size: 24px; line-height: 1.5; margin: 8rpx 0 32rpx; font-family: SimSun, serif; animation: rise-in 280ms var(--ease-out) both; }
+
+/* 分区卡片：玻璃面板 + 金色小标题 + 统一行样式 */
+.ns-section { margin-bottom: 28rpx; padding: 0 28rpx 8rpx; border: 1rpx solid var(--night-hairline); border-radius: 32rpx; background: var(--night-panel); box-shadow: 0 10rpx 28rpx rgba(0, 0, 0, .16); animation: rise-in 280ms var(--ease-out) both; }
+.ns-content > .ns-section:nth-child(2) { animation-delay: 40ms; }
+.ns-content > .ns-section:nth-child(3) { animation-delay: 80ms; }
+.ns-content > .ns-section:nth-child(4) { animation-delay: 120ms; }
+.ns-content > .ns-section:nth-child(5) { animation-delay: 160ms; }
+.ns-content > .ns-section:nth-child(6) { animation-delay: 200ms; }
+.ns-section-title { display: block; color: var(--night-gold); font-size: 15px; line-height: 1.6; padding: 24rpx 0 10rpx; border-bottom: 1rpx solid rgba(232, 200, 135, .14); }
+.ns-section-intro { padding-top: 12rpx; margin-top: 0; }
+.ns-subheading { display: block; color: var(--night-muted); font-size: 12px; padding: 24rpx 0 8rpx; }
+.ns-page .ns-row { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; width: 100%; max-width: 100%; min-height: 104rpx; padding: 20rpx 0; border-bottom: 1rpx solid rgba(168, 185, 182, .1); text-align: left; font-size: 14px; }
+.ns-row:last-child { border-bottom: 0; }
+.ns-row > view { flex: 1; min-width: 0; }
+.ns-row switch { flex-shrink: 0; }
+.ns-value { flex-shrink: 0; max-width: 48%; color: var(--night-muted); text-align: right; font-size: 13px; word-break: break-all; }
+.ns-help { display: block; font-size: 12px; line-height: 1.8; color: var(--night-muted); margin-top: 6rpx; }
+.ns-memory { margin: 8rpx 0 16rpx; padding: 4rpx 24rpx 20rpx; border: 1rpx solid var(--night-hairline); border-left: 3rpx solid var(--night-gold-line); border-radius: 24rpx; background: rgba(10, 26, 28, .55); }
+.ns-memory-title { font-size: 16px; color: var(--night-gold); }
+.ns-memory .ns-row { border: 0; }
+.ns-memory-actions { display: flex; justify-content: space-between; gap: 16rpx; }
+.ns-memory-actions button { width: auto; max-width: 50%; min-height: 44px; }
+.ns-page .ns-danger { color: var(--night-danger); }
+
+/* 底部抽屉：遮罩淡入 + 面板弹起 */
+.ns-overlay { position: fixed; inset: 0; z-index: 40; display: flex; align-items: flex-end; background: rgba(2, 10, 12, .72); animation: veil-in 200ms var(--ease-out); }
+.ns-sheet { width: 100%; max-height: 82vh; padding-bottom: env(safe-area-inset-bottom); background: linear-gradient(180deg, #0f2325, #0b1f21); border-top: 1rpx solid rgba(232, 200, 135, .18); border-radius: 36rpx 36rpx 0 0; animation: sheet-up 320ms var(--ease-spring); }
+.ns-sheet-heading { display: flex; align-items: center; justify-content: space-between; padding: 26rpx 32rpx 20rpx; font-size: 17px; }
+.ns-sheet-heading button { width: 44px; max-width: 44px; height: 44px; }
+.ns-sheet-heading image { width: 20px; height: 20px; }
+.ns-sheet-scroll { max-height: 62vh; }
+.ns-sheet-inner { padding: 0 32rpx 40rpx; }
+.ns-full { display: block; white-space: pre-wrap; word-break: break-all; font-size: 14px; line-height: 1.9; margin: 24rpx 0; }

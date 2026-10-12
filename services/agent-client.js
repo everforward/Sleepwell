@@ -13,6 +13,7 @@ try {
 const stream = require('../utils/llm-stream');
 const guide = require('../utils/agent-guide');
 const registry = require('../skills/registry');
+const accessCode = require('./access-code');
 
 const REC_MARKER = '@@REC@@';
 const SOUND_WHITELIST = ['rain', 'breeze', 'lake', 'white'];
@@ -133,8 +134,9 @@ function gatewayHeaders() {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${secrets.modelGateway.apiKey}`
   };
-  // 大赛模型试验验证码：网关当前忽略则无副作用，开始校验即生效。
-  if (secrets.modelGateway.verificationCode) headers['X-Verification-Code'] = secrets.modelGateway.verificationCode;
+  // 大赛模型试验验证码：使用者在本机输入过就带输入的，否则退回配置值。
+  const code = accessCode.current();
+  if (code) headers['X-Verification-Code'] = code;
   return headers;
 }
 

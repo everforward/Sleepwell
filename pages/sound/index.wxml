@@ -1,19 +1,19 @@
 <view class="page-shell sound-page">
-  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" aria-label="返回呼吸设置"><view class="back-arrow"></view></button><text class="topbar-label">环境声音</text></view>
+  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" hover-class="is-pressed" aria-label="返回呼吸设置"><view class="back-arrow"></view></button><text class="topbar-label">环境声音</text></view>
   <view class="sound-content">
     <text class="page-title">给呼吸留一点背景。</text>
     <text class="page-copy">声音会在呼吸过程中继续播放。</text>
     <view class="sound-list">
-      <button wx:for="{{sounds}}" wx:key="id" class="sound-row {{selected === item.id ? 'is-selected' : ''}}" data-id="{{item.id}}" bindtap="selectSound">
+      <button wx:for="{{sounds}}" wx:key="id" class="sound-row {{selected === item.id ? 'is-selected' : ''}}" data-id="{{item.id}}" bindtap="selectSound" hover-class="is-pressed">
         <view class="sound-glyph">{{item.glyph}}</view><view class="sound-copy"><text>{{item.name}}</text><text>{{item.detail}}</text></view><view class="sound-check">{{selected === item.id ? '✓' : ''}}</view>
       </button>
     </view>
-    <view class="player-bar"><button class="play-button" bindtap="togglePlay">{{playing ? 'Ⅱ' : '▶'}}</button><view class="player-wave"><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view></view><text class="player-status">{{playing ? '播放中' : '已暂停'}}</text></view>
-    <view class="volume-row"><text>音量</text><slider value="{{volume}}" activeColor="#cce3c2" backgroundColor="rgba(255,255,255,.12)" block-color="#dcebd5" bindchange="onVolumeChange"></slider><text>{{volume}}</text></view>
+    <view class="player-bar"><button class="play-button" bindtap="togglePlay" hover-class="is-pressed">{{playing ? 'Ⅱ' : '▶'}}</button><view class="player-wave"><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view><view class="wave-line"></view></view><text class="player-status">{{playing ? '播放中' : '已暂停'}}</text></view>
+    <view class="volume-row"><text>音量</text><slider value="{{volume}}" activeColor="#ebc979" backgroundColor="rgba(255,255,255,.12)" block-color="#f0d49a" bindchange="onVolumeChange"></slider><text>{{volume}}</text></view>
     <view class="timer-section">
       <text class="timer-label">睡眠定时</text>
       <view class="timer-options">
-        <button wx:for="{{timerOptions}}" wx:key="*this" class="{{timerMinutes === item ? 'is-selected' : ''}}" data-minutes="{{item}}" bindtap="chooseTimer" aria-label="{{item}}分钟后停止">{{item}} 分钟</button>
+        <button wx:for="{{timerOptions}}" wx:key="*this" class="{{timerMinutes === item ? 'is-selected' : ''}}" data-minutes="{{item}}" bindtap="chooseTimer" hover-class="is-pressed" aria-label="{{item}}分钟后停止">{{item}} 分钟</button>
       </view>
       <text class="timer-note">到时会慢慢安静下来</text>
     </view>

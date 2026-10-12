@@ -1,12 +1,12 @@
 <view class="page-shell journal-page">
-  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" aria-label="返回呼吸首页"><view class="back-arrow"></view></button><text class="topbar-label">感恩日记</text></view>
+  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" hover-class="is-pressed" aria-label="返回呼吸首页"><view class="back-arrow"></view></button><text class="topbar-label">感恩日记</text></view>
   <view class="journal-content safe-bottom">
     <text class="page-title">今天，有什么值得留下？</text>
     <text class="page-copy">一件小事也可以。最多写三条。</text>
     <view class="journal-form">
       <view wx:for="{{entries}}" wx:key="*this" class="journal-input-row"><text class="journal-number">0{{index + 1}}</text><textarea class="form-textarea" value="{{item}}" maxlength="120" auto-height="{{true}}" placeholder="写在这里…" placeholder-class="input-placeholder" data-index="{{index}}" bindinput="onInput"></textarea></view>
     </view>
-    <button class="primary-button" bindtap="saveJournal">留在今天</button>
+    <button class="primary-button" bindtap="saveJournal" hover-class="is-pressed">留在今天</button>
     <text wx:if="{{saved}}" class="saved-tip">已经替你留好了。</text>
     <view wx:if="{{savedEntries.length}}" class="past-section"><text class="past-title">之前留下的</text><view wx:for="{{savedEntries}}" wx:key="id" class="past-entry"><text class="past-date">{{item.date}}</text><text wx:for="{{item.items}}" wx:for-item="line" wx:key="*this" class="past-line">{{line}}</text></view></view>
   </view>

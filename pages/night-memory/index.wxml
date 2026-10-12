@@ -1,5 +1,5 @@
 <view class="nm-page">
-  <view class="ns-top" style="{{nav.topbarStyle}}"><button bindtap="goBack" class="ns-back" aria-label="返回设置"><image src="/assets/agent/icons/arrow-left-muted.png"/></button><text>夜喵的记忆</text></view>
+  <view class="ns-top" style="{{nav.topbarStyle}}"><button class="ns-back" hover-class="is-pressed" bindtap="goBack" aria-label="返回设置"><image src="/assets/agent/icons/arrow-left-muted.png"/></button><text>夜喵的记忆</text></view>
   <scroll-view class="nm-scroll" scroll-y>
     <view class="nm-content">
       <view class="nm-card"><text class="nm-text" user-select>{{content}}</text></view>

@@ -1,82 +1,119 @@
 <view class="night-page {{fontMode === '大' ? 'night-font-large' : fontMode === '小' ? 'night-font-small' : ''}}">
-  <scroll-view class="night-scroll" scroll-y scroll-into-view="{{scrollAnchor}}" scroll-with-animation="{{chatState !== 'sending'}}">
-    <view class="night-content" style="padding-top: {{nav.navigationBottom}}px;">
-      <image class="night-scene" src="/assets/agent/night-cat.jpg" mode="aspectFill" aria-label="月光下熟睡的小猫"></image>
-      <view class="scene-shade"></view>
-      <view class="night-heading">
-        <text class="night-title">夜喵</text>
-        <text class="night-subtitle">夜喵，你的 AI 睡前陪伴助手</text>
-        <button wx:if="{{homeState === 'initial'}}" class="night-settings" bindtap="openSettings" hover-class="is-pressed" aria-label="设置"><image src="/assets/agent/icons/settings.png"></image></button><button wx:else class="night-settings" bindtap="openChatSettings" aria-label="对话设置"><image src="/assets/agent/icons/settings.png"/></button>
+  <scroll-view class="home-scroll" scroll-y show-scrollbar="{{false}}">
+    <view class="home-stage">
+      <view class="hero">
+        <image class="hero-image" src="/assets/agent/night-cat.jpg" mode="aspectFill" aria-label="月光下熟睡的小猫"></image>
+        <view class="hero-shade"></view>
+        <view class="night-heading" style="padding-top: {{nav.navigationBottom}}px;">
+          <view class="heading-row">
+            <text class="night-title">夜喵</text>
+            <text class="night-subtitle">夜喵，你的 AI 睡前陪伴助手</text>
+            <button wx:if="{{homeState === 'initial'}}" class="night-settings" bindtap="openSettings" hover-class="is-pressed" aria-label="设置"><image src="/assets/agent/icons/settings.png"></image></button>
+            <button wx:else class="night-settings" bindtap="openChatSettings" aria-label="对话设置"><image src="/assets/agent/icons/settings.png"/></button>
+          </view>
+        </view>
       </view>
-      <view class="cat-space"></view>
-      <view class="night-body">
-        <view wx:if="{{homeState === 'initial' && displayMode !== '沉浸模式'}}" class="welcome-bubble"><view class="bubble-tail"></view><text>晚上好，我是夜喵。</text><text>{{welcomeQuestion || '什么让你难以放松？'}}</text></view>
-        <view wx:if="{{homeState === 'initial' && preferences.suggestions && displayMode === '完整模式'}}" class="topic-row" >
-          <scroll-view class="topic-scroll" scroll-x show-scrollbar="{{false}}">
-            <button wx:for="{{topics}}" wx:key="id" class="topic-chip" data-id="{{item.id}}" bindtap="chooseTopic" hover-class="is-pressed" aria-label="{{item.label}}">
-              <image class="topic-icon" src="/assets/agent/icons/{{item.icon}}.png"></image><text class="topic-label">{{item.label}}</text>
-            </button>
-          </scroll-view>
+      <view class="home-content">
+        <view wx:if="{{homeState === 'initial' && displayMode !== '沉浸模式'}}" class="welcome-card">
+          <view class="welcome-avatar"><image src="/assets/agent/night-cat.jpg" mode="aspectFill" aria-hidden="{{true}}"></image></view>
+          <view class="welcome-copy">
+            <text class="welcome-line">晚上好，我是夜喵。</text>
+            <text class="welcome-line welcome-line--ask">{{welcomeQuestion || '什么让你难以放松？'}}</text>
+          </view>
+        </view>
+        <view wx:if="{{homeState === 'initial' && preferences.suggestions && displayMode === '完整模式'}}" class="topic-grid">
+          <button wx:for="{{topics}}" wx:key="id" class="topic-chip" data-id="{{item.id}}" bindtap="chooseTopic" hover-class="is-pressed" aria-label="{{item.label}}">
+            <image class="topic-icon" src="/assets/agent/icons/{{item.icon}}.png"></image><text class="topic-label">{{item.label}}</text><view class="topic-chevron"></view>
+          </button>
         </view>
         <view wx:if="{{homeState === 'initial'}}" class="practice-card">
+          <image class="practice-cover" src="/assets/agent/moon-lake.jpg" mode="aspectFill" aria-hidden="{{true}}"></image>
           <view class="practice-copy"><text class="practice-title">今晚适合你的练习</text><text class="practice-detail">5 分钟 · 轻柔呼吸与思绪放松</text></view>
           <button class="guide-button" bindtap="startGuide" hover-class="is-pressed"><text>开始引导</text><view class="guide-chevron"></view></button>
         </view>
-        <view wx:if="{{homeState !== 'initial'}}" class="inline-conversation panel-in">
-          <view class="conversation-toolbar"><view class="agent-status agent-status--{{streamState}}"><view class="status-dot"></view><text>{{streamState === 'listening' ? '聆听中' : streamState === 'streaming' ? '回复中' : '在线'}}</text></view><button bindtap="closeChat">结束本次对话</button></view>
-          <block wx:for="{{messages}}" wx:key="id">
-            <view wx:if="{{item.role === 'skill'}}" class="skill-feedback">
-              <text class="skill-feedback-text">{{item.text}}</text>
-              <button wx:if="{{item.skill === 'play_sound'}}" class="skill-feedback-link" catchtap="goSoundPage">调整声音 ›</button>
-            </view>
-            <view wx:elif="{{item.role === 'skill-confirm'}}" class="skill-confirm-card">
-              <text class="skill-confirm-text">{{item.text}}</text>
-              <view class="skill-confirm-actions">
-                <button class="skill-confirm-yes" data-id="{{item.id}}" bindtap="confirmSkill" hover-class="is-pressed">执行</button>
-                <button class="skill-confirm-no" data-id="{{item.id}}" bindtap="cancelSkill" hover-class="is-pressed">取消</button>
-              </view>
-            </view>
-            <view wx:else class="inline-message inline-message--{{item.role}}">
-              <text class="inline-speaker">{{item.role === 'agent' ? '夜喵' : '你'}}</text>
-              <view class="inline-bubble"><text>{{item.text || '…'}}</text></view>
-              <view wx:if="{{item.role === 'agent' && item.done}}" class="msg-actions">
-                <button class="msg-act {{item.feedback === 'like' ? 'is-like' : ''}}" data-id="{{item.id}}" data-value="like" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="赞同"><image src="{{item.feedback === 'like' ? icons.likeActive : icons.like}}"/></button>
-                <button class="msg-act {{item.feedback === 'dislike' ? 'is-dislike' : ''}}" data-id="{{item.id}}" data-value="dislike" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="不满意"><image src="{{item.feedback === 'dislike' ? icons.dislikeActive : icons.dislike}}"/></button>
-                <button class="msg-act" data-id="{{item.id}}" bindtap="copyMessage" hover-class="is-act-pressed" aria-label="复制"><image src="{{icons.copy}}"/></button>
-                <button wx:if="{{item.id === lastAgentId && chatState !== 'sending'}}" class="msg-act" bindtap="regenerate" hover-class="is-act-pressed" aria-label="重新生成"><image src="{{icons.regenerate}}"/></button>
-              </view>
-            </view>
-          </block>
-          <view wx:if="{{awaitingFirst}}" class="conversation-status"><view class="typing-dots"><view class="typing-dot"></view><view class="typing-dot"></view><view class="typing-dot"></view></view><text>夜喵正在听…</text></view>
-          <view wx:if="{{chatState === 'error'}}" class="conversation-status conversation-status--error"><text>夜喵暂时没接上，你的话还在这里。</text><button class="status-retry" bindtap="retryTurn" hover-class="is-pressed">重试</button></view>
-          <view wx:if="{{recommendation}}" class="agent-recommendation"><image class="recommendation-cover" src="/assets/agent/moon-lake.jpg" mode="aspectFill"/><view class="recommendation-copy"><text class="recommendation-title">今晚推荐：{{recommendation.title}}</text><text class="practice-detail">{{recommendation.detail}}</text><button class="recommendation-play" bindtap="playRecommendation">开始播放 <view class="guide-chevron"/></button></view></view>
-          <view class="inline-input"><input value="{{draft}}" placeholder="继续和夜喵说说…" maxlength="500" confirm-type="send" bindinput="onDraftChange" bindconfirm="sendMessage" bindfocus="onInputFocus" bindblur="onInputBlur"/><button wx:if="{{chatState === 'sending'}}" class="inline-stop" bindtap="stopGeneration" hover-class="is-act-pressed" aria-label="停止生成"><image src="{{icons.stop}}"/></button><button wx:else class="inline-send" disabled="{{!canSend}}" bindtap="sendMessage" aria-label="发送"><image src="/assets/agent/icons/arrow-up-dark.png"/></button></view>
-          <view id="conversation-end-a" class="conversation-end"/><view id="conversation-end-b" class="conversation-end"/>
-        </view>
-        <button wx:if="{{homeState === 'initial'}}" class="night-composer" bindtap="openChat" hover-class="is-pressed" aria-label="和夜喵说说今晚的心情">
-          <image class="composer-sparkles" src="/assets/agent/icons/sparkles.png"></image><view class="composer-divider"></view><text>和夜喵说说今晚的心情…</text><image class="composer-send" src="/assets/agent/icons/send-muted.png"></image>
-        </button>
       </view>
     </view>
   </scroll-view>
-  <view class="night-nav">
-    <button class="night-nav-item {{!showRecords ? 'is-active' : ''}}" bindtap="closeRecords" aria-label="夜喵首页"><image src="/assets/agent/icons/{{showRecords ? 'cat-muted' : 'cat'}}.png"></image><text>夜喵</text></button>
-    <button class="night-nav-item" bindtap="goBreathe"><image src="/assets/agent/icons/crosshair-muted.png"></image><text>呼吸</text></button>
-    <button class="night-nav-item {{showRecords ? 'is-active' : ''}}" bindtap="openRecords"><image src="/assets/agent/icons/{{showRecords ? 'notebook' : 'notebook-muted'}}.png"></image><text>记录</text></button>
+  <view wx:if="{{homeState === 'initial'}}" class="night-dock">
+    <button class="night-composer" bindtap="openChat" hover-class="is-pressed" aria-label="和夜喵说说今晚的心情">
+      <image class="composer-sparkles" src="/assets/agent/icons/sparkles.png"></image><view class="composer-divider"></view><text class="composer-placeholder">和夜喵说说今晚的心情…</text><image class="composer-send" src="/assets/agent/icons/send-muted.png"></image>
+    </button>
   </view>
-  <view wx:if="{{false}}" class="night-chat" style="padding-top: {{nav.navigationBottom}}px; bottom: {{keyboardHeight}}px;">
-    <view class="chat-heading"><button class="night-close" bindtap="closeChat" aria-label="返回夜喵首页"><image src="/assets/agent/icons/arrow-left-muted.png"></image></button><view><text class="chat-title">夜喵</text><text class="chat-preview-label">对话预览</text></view><button class="chat-settings" bindtap="openChatSettings" aria-label="对话设置"><image src="/assets/agent/icons/settings.png"></image></button></view>
-    <scroll-view class="chat-messages" scroll-y scroll-into-view="chat-status">
-      <view class="chat-messages-inner">
-      <view class="chat-intro"><image src="/assets/agent/night-cat.jpg" mode="aspectFill"></image><text>今晚，慢慢来。</text></view>
-      <view class="chat-bubble chat-bubble--agent"><text>晚上好，我是夜喵。今晚有什么让你难以放松？</text></view>
-      <view wx:if="{{message}}" class="chat-bubble chat-bubble--user"><text>{{message}}</text></view>
-      <view id="chat-status" class="chat-status">
-        <view wx:if="{{chatState === 'sending'}}" class="chat-pending"><view class="pending-dot"></view><text>正在连接…</text></view>
-        <view wx:if="{{chatState === 'error'}}" class="chat-error"><text>夜喵的陪伴对话暂未开放。你的话还在这里，今晚可以先做一个轻柔的练习。</text><button bindtap="retryTurn" class="retry-button">重新连接</button><button bindtap="startGuide" class="chat-guide-button">开始今晚的练习</button></view>
+  <view wx:if="{{homeState === 'initial'}}" class="night-nav">
+    <button class="night-nav-item {{!showRecords ? 'is-active' : ''}}" bindtap="closeRecords" aria-label="夜喵首页"><image src="/assets/agent/icons/{{showRecords ? 'cat-muted' : 'cat'}}.png"></image><text>夜喵</text><view class="nav-indicator"></view></button>
+    <button class="night-nav-item" bindtap="goBreathe" aria-label="呼吸"><image src="/assets/agent/icons/crosshair-muted.png"></image><text>呼吸</text><view class="nav-indicator"></view></button>
+    <button class="night-nav-item" bindtap="openRecords" aria-label="记录"><image src="/assets/agent/icons/notebook-muted.png"></image><text>记录</text><view class="nav-indicator"></view></button>
+  </view>
+  <view wx:if="{{homeState !== 'initial'}}" class="chat-screen" style="padding-top: {{nav.navigationBottom}}px; bottom: {{keyboardHeight}}px;">
+    <view class="chat-heading">
+      <button class="chat-back" bindtap="closeChat" hover-class="is-pressed" aria-label="返回夜喵首页"><image src="/assets/agent/icons/arrow-left-muted.png"></image></button>
+      <view class="chat-title-block">
+        <text class="chat-title">夜喵</text>
+        <view class="agent-status agent-status--{{streamState}}"><view class="status-dot"></view><text>{{streamState === 'listening' ? '聆听中' : streamState === 'streaming' ? '回复中' : '在线'}}</text></view>
       </view>
+      <button class="chat-settings" bindtap="openChatSettings" hover-class="is-pressed" aria-label="对话设置"><image src="/assets/agent/icons/settings.png"></image></button>
+    </view>
+    <scroll-view class="chat-stream" scroll-y scroll-into-view="{{scrollAnchor}}" scroll-with-animation="{{chatState !== 'sending'}}" show-scrollbar="{{false}}">
+      <view class="chat-stream-inner">
+        <block wx:for="{{messages}}" wx:key="id">
+          <view wx:if="{{item.role === 'skill'}}" class="skill-feedback">
+            <text class="skill-feedback-text">{{item.text}}</text>
+            <button wx:if="{{item.skill === 'play_sound'}}" class="skill-feedback-link" catchtap="goSoundPage">调整声音 ›</button>
+          </view>
+          <view wx:elif="{{item.role === 'skill-confirm'}}" class="skill-confirm-card">
+            <text class="skill-confirm-text">{{item.text}}</text>
+            <view class="skill-confirm-actions">
+              <button class="skill-confirm-yes" data-id="{{item.id}}" bindtap="confirmSkill" hover-class="is-pressed">执行</button>
+              <button class="skill-confirm-no" data-id="{{item.id}}" bindtap="cancelSkill" hover-class="is-pressed">取消</button>
+            </view>
+          </view>
+          <view wx:else class="chat-message chat-message--{{item.role}}">
+            <text class="chat-speaker">{{item.role === 'agent' ? '夜喵' : '你'}}</text>
+            <view class="chat-bubble"><text>{{item.text || '…'}}</text><text wx:if="{{item.role === 'agent' && item.text && !item.done}}" class="stream-caret">▍</text></view>
+            <view wx:if="{{item.role === 'agent' && item.done}}" class="msg-actions">
+              <button class="msg-act {{item.feedback === 'like' ? 'is-like' : ''}}" data-id="{{item.id}}" data-value="like" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="赞同"><image src="{{item.feedback === 'like' ? icons.likeActive : icons.like}}"/></button>
+              <button class="msg-act {{item.feedback === 'dislike' ? 'is-dislike' : ''}}" data-id="{{item.id}}" data-value="dislike" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="不满意"><image src="{{item.feedback === 'dislike' ? icons.dislikeActive : icons.dislike}}"/></button>
+              <button class="msg-act" data-id="{{item.id}}" bindtap="copyMessage" hover-class="is-act-pressed" aria-label="复制"><image src="{{icons.copy}}"/></button>
+              <button wx:if="{{item.id === lastAgentId && chatState !== 'sending'}}" class="msg-act" bindtap="regenerate" hover-class="is-act-pressed" aria-label="重新生成"><image src="{{icons.regenerate}}"/></button>
+            </view>
+          </view>
+        </block>
+        <view wx:if="{{aiLocked}}" class="chat-gate">
+          <text class="chat-gate-title">输入验证码，开启夜喵对话</text>
+          <text class="chat-gate-hint">验证码由分享者提供，输入一次后本机会记住。</text>
+          <view class="chat-gate-row {{gateFocus ? 'is-focused' : ''}}">
+            <input class="chat-gate-input" value="{{codeInput}}" placeholder="请输入验证码" placeholder-class="chat-placeholder" maxlength="32" confirm-type="done" adjust-position="{{false}}" focus="{{gateFocus}}" bindinput="onCodeInput" bindconfirm="submitCode"/>
+            <button class="chat-gate-submit {{codeInput ? 'is-ready' : ''}}" disabled="{{!codeInput}}" bindtap="submitCode" hover-class="is-pressed">确认</button>
+          </view>
+          <text wx:if="{{codeError}}" class="chat-gate-error">验证码不正确，再试一次。</text>
+        </view>
+        <view wx:if="{{awaitingFirst}}" class="chat-message chat-message--agent chat-typing">
+          <view class="chat-bubble chat-bubble--typing"><view class="typing-dots"><view class="typing-dot"></view><view class="typing-dot"></view><view class="typing-dot"></view></view></view>
+        </view>
+        <view wx:if="{{chatState === 'error'}}" class="chat-error">
+          <text class="chat-error-text">夜喵暂时没接上，你的话还在这里。</text>
+          <button class="chat-error-retry" bindtap="retryTurn" hover-class="is-pressed">重试</button>
+        </view>
+        <view wx:if="{{recommendation}}" class="agent-recommendation">
+          <image class="recommendation-cover" src="/assets/agent/moon-lake.jpg" mode="aspectFill" aria-hidden="{{true}}"></image>
+          <view class="recommendation-copy">
+            <text class="recommendation-title">今晚推荐：{{recommendation.title}}</text>
+            <text class="practice-detail">{{recommendation.detail}}</text>
+            <button class="recommendation-play" bindtap="playRecommendation" hover-class="is-pressed">开始播放 <view class="guide-chevron"></view></button>
+          </view>
+        </view>
+        <view wx:if="{{messages.length > 1 && chatState !== 'sending'}}" class="chat-end-row">
+          <button class="chat-end-chip" bindtap="closeChat" hover-class="is-pressed">结束本次对话</button>
+        </view>
+        <view id="conversation-end-a" class="conversation-end"></view><view id="conversation-end-b" class="conversation-end"></view>
       </view>
     </scroll-view>
-    <view class="chat-input-row"><button class="voice-button {{recording ? 'is-recording' : ''}}" bindlongpress="startVoice" bindtouchend="stopVoice" catchtouchcancel="cancelVoice" aria-label="按住说话">说话</button><input class="chat-input" value="{{draft}}" placeholder="和夜喵说说今晚的心情…" placeholder-class="chat-placeholder" maxlength="500" focus="{{inputFocus}}" adjust-position="{{false}}" confirm-type="send" bindinput="onDraftChange" bindfocus="onInputFocus" bindblur="onInputBlur" bindconfirm="sendMessage"/><button class="chat-send" disabled="{{!canSend || chatState === 'sending'}}" bindtap="sendMessage" aria-label="发送"><image src="/assets/agent/icons/arrow-up-dark.png"></image></button></view>
+    <view class="chat-input-row">
+      <view class="chat-input-wrap {{inputFocus ? 'is-focused' : ''}}">
+        <input class="chat-input" value="{{draft}}" placeholder="继续和夜喵说说…" placeholder-class="chat-placeholder" maxlength="500" confirm-type="send" adjust-position="{{false}}" focus="{{inputFocus}}" bindinput="onDraftChange" bindconfirm="sendMessage" bindfocus="onInputFocus" bindblur="onInputBlur"/>
+        <button wx:if="{{chatState === 'sending'}}" class="chat-stop" bindtap="stopGeneration" hover-class="is-act-pressed" aria-label="停止生成"><image src="{{icons.stop}}"></image></button>
+        <button wx:else class="chat-send {{canSend ? 'is-ready' : ''}}" disabled="{{!canSend}}" bindtap="sendMessage" aria-label="发送"><image src="/assets/agent/icons/arrow-up-dark.png"></image></button>
+      </view>
+    </view>
   </view>
 </view>

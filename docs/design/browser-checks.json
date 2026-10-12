@@ -2,197 +2,513 @@
   "checks": [
     {
       "width": 320,
+      "height": 640,
+      "innerHeight": 640,
+      "innerWidth": 320,
       "overflow": false,
       "assets": true,
-      "buttons": [
+      "composer": {
+        "top": 507.25,
+        "bottom": 551.25,
+        "left": 13.640625,
+        "right": 306.359375,
+        "width": 292.71875,
+        "height": 44
+      },
+      "nav": {
+        "top": 551.25,
+        "bottom": 640,
+        "left": 0,
+        "right": 320,
+        "width": 320,
+        "height": 88.75
+      },
+      "welcome": {
+        "top": 223.578125,
+        "bottom": 294.96875,
+        "left": 13.640625,
+        "right": 306.359375,
+        "width": 292.71875,
+        "height": 71.390625
+      },
+      "topics": {
+        "top": 303.5,
+        "bottom": 398.3125,
+        "left": 13.640625,
+        "right": 306.359375,
+        "width": 292.71875,
+        "height": 94.8125
+      },
+      "practice": {
+        "top": 406.84375,
+        "bottom": 469.90625,
+        "left": 13.640625,
+        "right": 306.359375,
+        "width": 292.71875,
+        "height": 63.0625
+      },
+      "topicChips": [
         {
           "label": "考试焦虑",
+          "top": 303.5,
+          "bottom": 347.5,
+          "left": 13.640625,
+          "right": 156.59375,
           "width": 142.953125,
-          "height": 44,
-          "inside": true
+          "height": 44
         },
         {
           "label": "论文 / 科研压力",
+          "top": 303.5,
+          "bottom": 347.5,
+          "left": 163.40625,
+          "right": 306.359375,
           "width": 142.953125,
-          "height": 44,
-          "inside": true
+          "height": 44
         },
         {
           "label": "宿舍难以放松",
+          "top": 354.3125,
+          "bottom": 398.3125,
+          "left": 13.640625,
+          "right": 156.59375,
           "width": 142.953125,
-          "height": 44,
-          "inside": true
+          "height": 44
         },
         {
           "label": "脑子停不下来",
+          "top": 354.3125,
+          "bottom": 398.3125,
+          "left": 163.40625,
+          "right": 306.359375,
           "width": 142.953125,
-          "height": 44,
-          "inside": true
-        },
-        {
-          "label": "开始引导",
-          "width": 80.125,
-          "height": 44,
-          "inside": true
-        },
-        {
-          "label": "和夜喵说说今晚的心情…",
-          "width": 292.71875,
-          "height": 44,
-          "inside": true
-        },
+          "height": 44
+        }
+      ],
+      "guideButton": {
+        "top": 416.375,
+        "bottom": 460.375,
+        "left": 213.3125,
+        "right": 295.984375,
+        "width": 82.671875,
+        "height": 44
+      },
+      "navItems": [
         {
           "label": "夜喵",
+          "top": 555.65625,
+          "bottom": 601.734375,
+          "left": 10.234375,
+          "right": 110.078125,
           "width": 99.84375,
-          "height": 46.078125,
-          "inside": true
+          "height": 46.078125
         },
         {
-          "label": "呼吸世界",
+          "label": "呼吸",
+          "top": 555.65625,
+          "bottom": 601.734375,
+          "left": 110.078125,
+          "right": 209.921875,
           "width": 99.84375,
-          "height": 46.078125,
-          "inside": true
+          "height": 46.078125
         },
         {
           "label": "记录",
+          "top": 555.65625,
+          "bottom": 601.734375,
+          "left": 209.921875,
+          "right": 309.765625,
           "width": 99.84375,
-          "height": 46.078125,
-          "inside": true
+          "height": 46.078125
         }
-      ]
+      ],
+      "smallTargets": [],
+      "outsideViewport": []
     },
     {
       "width": 375,
+      "height": 812,
+      "innerHeight": 812,
+      "innerWidth": 375,
       "overflow": false,
       "assets": true,
-      "buttons": [
+      "composer": {
+        "top": 666,
+        "bottom": 714,
+        "left": 16,
+        "right": 359,
+        "width": 343,
+        "height": 48
+      },
+      "nav": {
+        "top": 714,
+        "bottom": 812,
+        "left": 0,
+        "right": 375,
+        "width": 375,
+        "height": 98
+      },
+      "welcome": {
+        "top": 262,
+        "bottom": 337.375,
+        "left": 16,
+        "right": 359,
+        "width": 343,
+        "height": 75.375
+      },
+      "topics": {
+        "top": 347.375,
+        "bottom": 443.375,
+        "left": 16,
+        "right": 359,
+        "width": 343,
+        "height": 96
+      },
+      "practice": {
+        "top": 453.375,
+        "bottom": 534.96875,
+        "left": 16,
+        "right": 359,
+        "width": 343,
+        "height": 81.59375
+      },
+      "topicChips": [
         {
           "label": "考试焦虑",
+          "top": 347.375,
+          "bottom": 391.375,
+          "left": 16,
+          "right": 183.5,
           "width": 167.5,
-          "height": 48,
-          "inside": true
+          "height": 44
         },
         {
           "label": "论文 / 科研压力",
+          "top": 347.375,
+          "bottom": 391.375,
+          "left": 191.5,
+          "right": 359,
           "width": 167.5,
-          "height": 48,
-          "inside": true
+          "height": 44
         },
         {
           "label": "宿舍难以放松",
+          "top": 399.375,
+          "bottom": 443.375,
+          "left": 16,
+          "right": 183.5,
           "width": 167.5,
-          "height": 48,
-          "inside": true
+          "height": 44
         },
         {
           "label": "脑子停不下来",
+          "top": 399.375,
+          "bottom": 443.375,
+          "left": 191.5,
+          "right": 359,
           "width": 167.5,
-          "height": 48,
-          "inside": true
-        },
-        {
-          "label": "开始引导",
-          "width": 85,
-          "height": 44,
-          "inside": true
-        },
-        {
-          "label": "和夜喵说说今晚的心情…",
-          "width": 343,
-          "height": 48,
-          "inside": true
-        },
+          "height": 44
+        }
+      ],
+      "guideButton": {
+        "top": 472.171875,
+        "bottom": 516.171875,
+        "left": 259,
+        "right": 347,
+        "width": 88,
+        "height": 44
+      },
+      "navItems": [
         {
           "label": "夜喵",
+          "top": 719,
+          "bottom": 773,
+          "left": 12,
+          "right": 129,
           "width": 117,
-          "height": 54,
-          "inside": true
+          "height": 54
         },
         {
-          "label": "呼吸世界",
+          "label": "呼吸",
+          "top": 719,
+          "bottom": 773,
+          "left": 129,
+          "right": 246,
           "width": 117,
-          "height": 54,
-          "inside": true
+          "height": 54
         },
         {
           "label": "记录",
+          "top": 719,
+          "bottom": 773,
+          "left": 246,
+          "right": 363,
           "width": 117,
-          "height": 54,
-          "inside": true
+          "height": 54
         }
-      ]
+      ],
+      "smallTargets": [],
+      "outsideViewport": []
     },
     {
       "width": 430,
+      "height": 932,
+      "innerHeight": 932,
+      "innerWidth": 430,
       "overflow": false,
       "assets": true,
-      "buttons": [
+      "composer": {
+        "top": 769.765625,
+        "bottom": 824.796875,
+        "left": 18.34375,
+        "right": 411.65625,
+        "width": 393.3125,
+        "height": 55.03125
+      },
+      "nav": {
+        "top": 824.796875,
+        "bottom": 932,
+        "left": 0,
+        "right": 430,
+        "width": 430,
+        "height": 107.203125
+      },
+      "welcome": {
+        "top": 300.421875,
+        "bottom": 379.734375,
+        "left": 18.34375,
+        "right": 411.65625,
+        "width": 393.3125,
+        "height": 79.3125
+      },
+      "topics": {
+        "top": 391.1875,
+        "bottom": 501.265625,
+        "left": 18.34375,
+        "right": 411.65625,
+        "width": 393.3125,
+        "height": 110.078125
+      },
+      "practice": {
+        "top": 512.71875,
+        "bottom": 601.828125,
+        "left": 18.34375,
+        "right": 411.65625,
+        "width": 393.3125,
+        "height": 89.109375
+      },
+      "topicChips": [
         {
           "label": "考试焦虑",
+          "top": 391.1875,
+          "bottom": 441.640625,
+          "left": 18.34375,
+          "right": 210.40625,
           "width": 192.0625,
-          "height": 55.03125,
-          "inside": true
+          "height": 50.453125
         },
         {
           "label": "论文 / 科研压力",
+          "top": 391.1875,
+          "bottom": 441.640625,
+          "left": 219.578125,
+          "right": 411.65625,
           "width": 192.078125,
-          "height": 55.03125,
-          "inside": true
+          "height": 50.453125
         },
         {
           "label": "宿舍难以放松",
+          "top": 450.8125,
+          "bottom": 501.265625,
+          "left": 18.34375,
+          "right": 210.40625,
           "width": 192.0625,
-          "height": 55.03125,
-          "inside": true
+          "height": 50.453125
         },
         {
           "label": "脑子停不下来",
+          "top": 450.8125,
+          "bottom": 501.265625,
+          "left": 219.578125,
+          "right": 411.65625,
           "width": 192.078125,
-          "height": 55.03125,
-          "inside": true
-        },
-        {
-          "label": "开始引导",
-          "width": 90.578125,
-          "height": 44,
-          "inside": true
-        },
-        {
-          "label": "和夜喵说说今晚的心情…",
-          "width": 393.3125,
-          "height": 55.03125,
-          "inside": true
-        },
+          "height": 50.453125
+        }
+      ],
+      "guideButton": {
+        "top": 535.265625,
+        "bottom": 579.265625,
+        "left": 304.78125,
+        "right": 398.046875,
+        "width": 93.265625,
+        "height": 44
+      },
+      "navItems": [
         {
           "label": "夜喵",
+          "top": 830.375,
+          "bottom": 892.28125,
+          "left": 13.75,
+          "right": 147.90625,
           "width": 134.15625,
-          "height": 61.90625,
-          "inside": true
+          "height": 61.90625
         },
         {
-          "label": "呼吸世界",
+          "label": "呼吸",
+          "top": 830.375,
+          "bottom": 892.28125,
+          "left": 147.90625,
+          "right": 282.078125,
           "width": 134.171875,
-          "height": 61.90625,
-          "inside": true
+          "height": 61.90625
         },
         {
           "label": "记录",
+          "top": 830.375,
+          "bottom": 892.28125,
+          "left": 282.078125,
+          "right": 416.25,
           "width": 134.171875,
-          "height": 61.90625,
-          "inside": true
+          "height": 61.90625
         }
-      ]
+      ],
+      "smallTargets": [],
+      "outsideViewport": []
     }
   ],
-  "keyboardCheck": {
-    "x": 0,
-    "y": 413,
-    "width": 375,
-    "height": 99
+  "convo": {
+    "user": 1,
+    "agent": 2,
+    "bubbles": [
+      "什么让你难以放松？▍",
+      "今晚脑子停不下来，我想先慢慢听点雨声",
+      "我听到了。你现在更想安静休息，还是先让思绪慢下来？"
+    ]
   },
-  "route": {
-    "type": "navigateTo",
-    "url": "/pages/focus/index"
+  "gate": {
+    "lockedOnEntry": true,
+    "wrongCodeRejected": true,
+    "code": "configured"
+  },
+  "keyboardRow": {
+    "x": 0,
+    "y": 409,
+    "width": 375,
+    "height": 103
+  },
+  "secondary": {
+    "/record": [
+      {
+        "width": 320,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      },
+      {
+        "width": 375,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      }
+    ],
+    "/night-settings": [
+      {
+        "width": 320,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      },
+      {
+        "width": 375,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      }
+    ],
+    "/night-memory": [
+      {
+        "width": 320,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      },
+      {
+        "width": 375,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      }
+    ],
+    "/sound": [
+      {
+        "width": 320,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      },
+      {
+        "width": 375,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      }
+    ],
+    "/journal": [
+      {
+        "width": 320,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      },
+      {
+        "width": 375,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      }
+    ],
+    "/sleep": [
+      {
+        "width": 320,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      },
+      {
+        "width": 375,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      }
+    ],
+    "/focus": [
+      {
+        "width": 320,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      },
+      {
+        "width": 375,
+        "overflow": false,
+        "assets": true,
+        "small": [],
+        "outside": []
+      }
+    ]
   },
   "errors": []
 }

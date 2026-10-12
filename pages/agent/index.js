@@ -7,6 +7,7 @@ const agentContext = require('../../utils/agent-context');
 const agentMemory = require('../../services/agent-memory');
 const agentPersona = require('../../utils/agent-persona');
 const agentClient = require('../../services/agent-client');
+const accessCode = require('../../services/access-code');
 const skillRegistry = require('../../skills/registry');
 const agentIcons = require('../../utils/agent-icons');
 
@@ -30,10 +31,12 @@ Page({
     message: '',
     chatState: 'idle',
     streamState: 'idle',
-    recording: false,
-    voiceReady: false,
     keyboardHeight: 0,
     inputFocus: false,
+    aiLocked: false,
+    codeInput: '',
+    codeError: false,
+    gateFocus: false,
     recentSessions: [],
     icons: agentIcons,
     lastAgentId: '',
@@ -41,8 +44,6 @@ Page({
     sevenDay: { activeDays: 0, completedSessions: 0, outcomes: { relieved: 0, same: 0, tense: 0 } }
   },
   onLoad() {
-    this.recorder = wx.getRecorderManager ? wx.getRecorderManager() : null;
-    if (this.recorder && this.recorder.onStop) this.recorder.onStop((result) => this.setData({ recording: false, voiceReady: Boolean(result && result.tempFilePath) }));
     this.keyboardListener = (event) => {
       this.setData({ keyboardHeight: this.data.showChat ? Math.max(0, event.height || 0) : 0 });
     };
@@ -50,12 +51,12 @@ Page({
   },
   onShow() {
     const preferences = nightPreferences.read();
-    this.setData({ nav: getNavigationMetrics(), preferences, welcomeQuestion: preferences.question, displayMode: preferences.display, fontMode: preferences.fontSize });
+    this.setData({ nav: getNavigationMetrics(), preferences, welcomeQuestion: preferences.question, displayMode: preferences.display, fontMode: preferences.fontSize, aiLocked: !accessCode.isUnlocked() });
     wx.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
   },
   onHide() {
     this.cancelPending();
-    this.setData({ inputFocus: false, keyboardHeight: 0 });
+    this.setData({ inputFocus: false, gateFocus: false, keyboardHeight: 0 });
   },
   onUnload() {
     this.cancelPending();
@@ -73,7 +74,37 @@ Page({
   },
   openRecords() { wx.reLaunch({ url: '/pages/record/index' }); },
   closeRecords() { this.setData({ showRecords: false }); },
-  openChat() { if (this.data.homeState === 'initial') this.beginConversation(''); this.setData({ inputFocus: true }); },
+  openChat() {
+    if (this.data.homeState !== 'initial') return;
+    this.beginConversation('');
+    // 等对话层入场动画走完再聚焦输入框，避免键盘抢在面板动画之前弹出。
+    if (this.focusTimer) clearTimeout(this.focusTimer);
+    this.focusTimer = setTimeout(() => {
+      this.focusTimer = null;
+      if (this.data.homeState === 'initial') return;
+      if (this.data.aiLocked) this.setData({ gateFocus: true });
+      else this.setData({ inputFocus: true });
+    }, 280);
+  },
+  // 验证码门禁：输入正确前不发起对话，输入一次后本机记住。
+  onCodeInput(event) {
+    this.setData({ codeInput: event.detail.value, codeError: false });
+  },
+  submitCode() {
+    const input = String(this.data.codeInput || '').trim();
+    if (!input) return;
+    if (!accessCode.save(input)) {
+      this.setData({ codeError: true });
+      if (wx.vibrateShort) { try { wx.vibrateShort({ type: 'light' }); } catch (error) { /* 触感反馈失败不影响校验 */ } }
+      return;
+    }
+    this.setData({ aiLocked: false, codeError: false, codeInput: '', gateFocus: false, inputFocus: true });
+    wx.showToast({ title: '验证成功，可以开始聊了', icon: 'none' });
+  },
+  nudgeGate() {
+    this.setData({ gateFocus: true });
+    wx.showToast({ title: '请先输入验证码', icon: 'none' });
+  },
   buildOpening(topic) {
     if (topic && guide.openings[topic]) return guide.openings[topic];
     // 个性化开场受记忆开关实时控制。
@@ -96,13 +127,6 @@ Page({
     if (item) wx.navigateTo({ url: `/pages/sound/index?sound=${item.sound}&minutes=${item.minutes}` });
   },
   openChatSettings() { wx.navigateTo({ url: '/pages/night-settings/index?from=chat' }); },
-  startVoice() {
-    if (!this.recorder || this.data.recording) return;
-    this.setData({ recording: true, voiceReady: false });
-    try { this.recorder.start({ format: 'mp3', duration: 60000 }); } catch (error) { this.setData({ recording: false }); }
-  },
-  stopVoice() { if (this.recorder && this.data.recording) this.recorder.stop(); },
-  cancelVoice() { if (this.recorder && this.data.recording) this.recorder.stop(); this.setData({ recording: false, voiceReady: false }); },
   chooseTopic(event) {
     const topic = this.data.topics.find((item) => item.id === event.currentTarget.dataset.id);
     if (!topic) return;
@@ -110,12 +134,13 @@ Page({
   },
   closeChat() {
     this.cancelPending();
+    if (this.focusTimer) { clearTimeout(this.focusTimer); this.focusTimer = null; }
     if (this.data.messages.length > 1) {
       // 后台生成对话摘要供下次开场使用；失败静默跳过，不阻塞返回首页。
       agentMemory.summarizeConversation(this.data.messages, this.data.activeTopic);
     }
     if (wx.hideKeyboard) wx.hideKeyboard();
-    this.setData({ homeState: 'initial', showChat: false, messages: [], answers: [], recommendation: null, draft: '', canSend: false, awaitingFirst: false, chatState: 'idle', inputFocus: false, keyboardHeight: 0 });
+    this.setData({ homeState: 'initial', showChat: false, messages: [], answers: [], recommendation: null, draft: '', canSend: false, awaitingFirst: false, chatState: 'idle', inputFocus: false, gateFocus: false, codeInput: '', codeError: false, keyboardHeight: 0 });
   },
   onDraftChange(event) { this.setData({ draft: event.detail.value, canSend: Boolean(event.detail.value.trim()) }); },
   onInputFocus() { this.setData({ inputFocus: true }); },
@@ -175,6 +200,7 @@ Page({
           recommendation: result.recommendation || null,
           homeState: result.recommendation ? 'recommendation' : 'chat'
         });
+        if (wx.vibrateShort) { try { wx.vibrateShort({ type: 'light' }); } catch (error) { /* 触感反馈失败不影响收尾 */ } }
         if (result.skillCall && !result.skillCall.invalid) this.handleSkillCall(result.skillCall);
       },
       onError: () => {
@@ -195,6 +221,7 @@ Page({
   sendMessage() {
     const message = this.data.draft.trim();
     if (!message || this.data.chatState === 'sending') return;
+    if (this.data.aiLocked) { this.nudgeGate(); return; }
     const answers = this.data.answers.concat(message);
     const history = this.data.messages.concat([{ id: `user-${answers.length}`, role: 'user', text: message }]);
     const agentId = `agent-${answers.length}`;
@@ -213,6 +240,7 @@ Page({
       scrollAnchor: this.flipAnchor()
     });
     if (wx.hideKeyboard) wx.hideKeyboard();
+    if (wx.vibrateShort) { try { wx.vibrateShort({ type: 'light' }); } catch (error) { /* 触感反馈失败不影响发送 */ } }
     this.lastTurn = { agentId, history, answers };
     this.runAgentTurn(this.lastTurn);
   },

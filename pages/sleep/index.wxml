@@ -1,5 +1,5 @@
 <view class="page-shell sleep-page">
-  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" aria-label="返回呼吸首页"><view class="back-arrow"></view></button><text class="topbar-label">睡眠记录</text></view>
+  <view class="topbar secondary-topbar" style="{{nav.topbarStyle}}"><button class="icon-button icon-button--back" bindtap="goBack" hover-class="is-pressed" aria-label="返回呼吸首页"><view class="back-arrow"></view></button><text class="topbar-label">睡眠记录</text></view>
   <view class="sleep-content safe-bottom">
     <text class="page-title">那一晚，睡得怎么样？</text>
     <text class="page-copy">不用精确，记下大概的时间和感受。</text>
@@ -10,8 +10,8 @@
       <picker mode="time" value="{{wakeTime}}" bindchange="onWakeChange"><view class="time-field"><text>起床</text><text class="time-value">{{wakeTime}}</text></view></picker>
     </view>
     <view class="duration-band"><text>上床至起床</text><text class="duration-value">{{duration}}</text></view>
-    <view class="feeling-section"><text class="form-label">睡眠感受</text><view class="feeling-scale"><button wx:for="{{feelings}}" wx:key="*this" class="feeling-button {{feeling === item ? 'is-selected' : ''}}" data-value="{{item}}" bindtap="setFeeling">{{item}}</button></view><view class="feeling-labels"><text>很疲惫</text><text>很舒展</text></view></view>
-    <button class="primary-button" bindtap="saveSleep">保存这晚的记录</button>
+    <view class="feeling-section"><text class="form-label">睡眠感受</text><view class="feeling-scale"><button wx:for="{{feelings}}" wx:key="*this" class="feeling-button {{feeling === item ? 'is-selected' : ''}}" data-value="{{item}}" bindtap="setFeeling" hover-class="is-pressed">{{item}}</button></view><view class="feeling-labels"><text>很疲惫</text><text>很舒展</text></view></view>
+    <button class="primary-button" bindtap="saveSleep" hover-class="is-pressed">保存这晚的记录</button>
     <view wx:if="{{records.length}}" class="sleep-history"><text class="history-title">最近</text><view wx:for="{{records}}" wx:key="id" class="sleep-row"><view><text>{{item.date}}</text><text>{{item.bedTime}} – {{item.wakeTime}}</text></view><view><text class="sleep-duration">{{item.duration}}</text><text>感受 {{item.feeling}} / 5</text></view></view></view>
   </view>
 </view>

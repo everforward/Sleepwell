@@ -1,12 +1,17 @@
-.focus-page { min-height: 100vh; }
-.topbar-label { color: var(--text-soft); font-size: 24rpx; letter-spacing: 2rpx; }
-.topbar-spacer { width: 80rpx; }
-.focus-content { padding: 56rpx 48rpx 72rpx; }
-.focus-content .page-title { display: block; max-width: 580rpx; }
-.focus-steps { margin: 70rpx 0 56rpx; }
-.focus-step { display: flex; gap: 24rpx; padding: 28rpx 0; border-bottom: 1rpx solid var(--line); }
-.focus-step__number { display: flex; align-items: center; justify-content: center; flex: 0 0 48rpx; width: 48rpx; height: 48rpx; border: 1rpx solid rgba(204, 227, 194, 0.3); border-radius: 50%; color: var(--accent); }
+@import '../../styles/night-theme.wxss';
+
+/* 页内覆盖夜喵主题（不动 app.wxss，避免影响呼吸页 Skyline） */
+.focus-page { min-height: 100vh; color: var(--night-text); background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); }
+.focus-page .topbar-label { color: var(--night-muted); font-size: 24rpx; letter-spacing: 2rpx; }.topbar-spacer { width: 80rpx; }
+.focus-content { padding: 56rpx 48rpx 72rpx; animation: rise-in 300ms var(--ease-out) both; }
+.focus-content .page-title { display: block; max-width: 580rpx; color: var(--night-text); }
+.focus-page .page-copy { display: block; color: var(--night-muted); }
+.focus-page .page-copy--tight { margin-top: 4rpx; }
+.focus-steps { display: flex; flex-direction: column; gap: 18rpx; margin: 70rpx 0 56rpx; }
+.focus-step { display: flex; gap: 24rpx; padding: 28rpx 24rpx; border: 1rpx solid var(--night-hairline); border-radius: 28rpx; background: var(--night-panel); }
+.focus-step__number { display: flex; align-items: center; justify-content: center; flex: 0 0 48rpx; width: 48rpx; height: 48rpx; border: 1rpx solid rgba(232, 200, 135, .3); border-radius: 50%; background: rgba(232, 200, 135, .06); color: var(--night-gold); }
 .focus-step__title, .focus-step__detail { display: block; }
 .focus-step__title { font-size: 29rpx; }
-.focus-step__detail { margin-top: 10rpx; color: var(--text-soft); font-size: 24rpx; line-height: 1.6; }
-.focus-message { display: block; margin-bottom: 32rpx; color: var(--accent); font-size: 23rpx; line-height: 1.7; }
+.focus-step__detail { margin-top: 10rpx; color: var(--night-muted); font-size: 24rpx; line-height: 1.6; }
+.focus-message { display: block; margin-bottom: 32rpx; color: var(--night-gold); font-size: 23rpx; line-height: 1.7; animation: pop-in 240ms var(--ease-spring); }
+.focus-page .primary-button { min-height: max(96rpx, 44px); border-radius: 999rpx; color: #24312c; font-size: 15px; font-weight: 500; background: linear-gradient(135deg, #f0d49a, #e2bd76); box-shadow: 0 6rpx 24rpx rgba(232, 200, 135, .24); }

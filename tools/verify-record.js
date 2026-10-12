@@ -1,16 +1,18 @@
 const { createRequire } = require('node:module');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const runtime = createRequire('C:/Users/16494/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/runtime.js');
+const dependencyRoot = process.env.NIGHTCAT_NODE_MODULES || 'C:/Users/19237/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules';
+const runtime = createRequire(path.join(dependencyRoot, 'runtime.js'));
+const BASE = 'http://127.0.0.1:' + (process.env.NIGHTCAT_PREVIEW_PORT || 4180);
 async function main() {
-  const browser = await runtime('playwright').chromium.launch({ headless: true, executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
+  const browser = await runtime('playwright').chromium.launch({ headless: true, executablePath: process.env.NIGHTCAT_CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
   try {
     const page = await browser.newPage();
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     for (const width of [375,390]) {
       await page.setViewportSize({ width, height: width === 375 ? 812 : 844 });
-      await page.goto('http://127.0.0.1:4181/record');
+      await page.goto(BASE + '/record');
       await page.evaluate(() => {
         localStorage.setItem('sleepwell.sleep.v1', JSON.stringify([{ id: 'test', nightDate: '2026-08-01', bedTime: '22:00', wakeTime: '07:00', feeling: 4 }]));
         localStorage.setItem('sleepwell.journal.v1', JSON.stringify([{ id: 'journal-test', createdAt: Date.now(), date: '10 月 11 日', items: ['感谢今天完成实验。'.repeat(12)] }]));

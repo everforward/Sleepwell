@@ -4,14 +4,27 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const port = Number(process.env.NIGHTCAT_PREVIEW_PORT || 4180);
+const PAGES = { '/': 'agent', '/record': 'record', '/night-settings': 'night-settings', '/night-memory': 'night-memory', '/sound': 'sound', '/journal': 'journal', '/sleep': 'sleep', '/focus': 'focus' };
 function read(file) { return fs.readFileSync(path.join(root, file), 'utf8'); }
+// 内联 wxss 的 @import（浏览器不支持小程序相对路径与 rpx 变换）。
+function readCss(file, seen = new Set()) {
+  return read(file).replace(/@import\s+['"]([^'"]+)['"]\s*;/g, (all, target) => {
+    const resolved = path.posix.join(path.posix.dirname(file), target);
+    if (seen.has(resolved)) return '';
+    seen.add(resolved);
+    return readCss(resolved, seen);
+  });
+}
 function moduleSources() {
   const sources = {};
-  for (const folder of ['utils', 'services']) {
-    for (const name of fs.readdirSync(path.join(root, folder))) {
-      if (name.endsWith('.js')) sources['/' + folder + '/' + name] = read(folder + '/' + name);
+  function walk(folder) {
+    for (const entry of fs.readdirSync(path.join(root, folder), { withFileTypes: true })) {
+      const relative = folder + '/' + entry.name;
+      if (entry.isDirectory()) walk(relative);
+      else if (entry.name.endsWith('.js')) sources['/' + relative] = read(relative);
     }
   }
+  for (const folder of ['utils', 'services', 'skills']) walk(folder);
   return sources;
 }
 function clientRuntime(payload) {
@@ -19,7 +32,7 @@ function clientRuntime(payload) {
   const moduleCache = {};
   let page;
   let rendering = false;
-  const app = { globalData: {} };
+  const app = { globalData: { audioState: { sound: 'breeze', playing: false, volume: 0.42, timerMinutes: 30 } } };
   const wx = {
     getWindowInfo: () => ({ windowWidth: innerWidth, statusBarHeight: 24 }),
     getMenuButtonBoundingClientRect: () => ({ top: 32, bottom: 64, left: innerWidth - 96 }),
@@ -41,8 +54,14 @@ function clientRuntime(payload) {
     new Function('require', 'module', 'exports', 'wx', 'getApp', data.modules[file])(resolve, module, module.exports, wx, () => app);
     return module.exports;
   }
+  // 与真实 WXML 一致：数据里没有的变量求值为 undefined，而不是抛 ReferenceError。
   function evaluate(expression, scope) {
-    return new Function('scope', 'with(scope) { return (' + expression + '); }')(scope);
+    try {
+      return new Function('scope', 'with(scope) { return (' + expression + '); }')(scope);
+    } catch (error) {
+      if (error instanceof ReferenceError) return undefined;
+      throw error;
+    }
   }
   function interpolate(value, scope) {
     const exact = value.match(/^\{\{([\s\S]*?)\}\}$/);
@@ -99,6 +118,10 @@ function clientRuntime(payload) {
         if (child.hasAttribute('wx:if')) {
           matched = Boolean(interpolate(child.getAttribute('wx:if'), scope));
           if (!matched) continue;
+        } else if (child.hasAttribute('wx:elif')) {
+          if (matched) continue;
+          matched = Boolean(interpolate(child.getAttribute('wx:elif'), scope));
+          if (!matched) continue;
         } else if (child.hasAttribute('wx:else')) {
           if (matched) continue;
           matched = true;
@@ -124,9 +147,11 @@ function clientRuntime(payload) {
     }
     const anchor = document.getElementById('chat-status');
     if (anchor && page.data.message) anchor.scrollIntoView({ block: 'nearest' });
+    const stream = document.querySelector('.chat-stream') || document.querySelector('.chat-messages');
+    if (stream) stream.scrollTop = stream.scrollHeight;
     rendering = false;
   }
-  new Function('require', 'Page', 'wx', data.script)((name) => loadModule(new URL(name + '.js', 'http://preview/pages/' + data.pageName + '/index.js').pathname), (definition) => { page = definition; }, wx);
+  new Function('require', 'Page', 'wx', 'getApp', data.script)((name) => loadModule(new URL(name + '.js', 'http://preview/pages/' + data.pageName + '/index.js').pathname), (definition) => { page = definition; }, wx, () => app);
   page.data = structuredClone(page.data);
   page.setData = (values) => {
     const changed = Object.keys(values).some((key) => page.data[key] !== values[key]);
@@ -135,8 +160,9 @@ function clientRuntime(payload) {
   };
   window.previewPage = page;
   window.previewWx = wx;
-  page.onLoad();
-  page.onShow();
+  // 与真实页面一致：未定义的生命周期直接跳过。
+  if (page.onLoad) page.onLoad();
+  if (page.onShow) page.onShow();
   render();
   addEventListener('resize', () => document.documentElement.style.setProperty('--rpx', innerWidth / 750 + 'px'));
   document.documentElement.style.setProperty('--rpx', innerWidth / 750 + 'px');
@@ -144,7 +170,7 @@ function clientRuntime(payload) {
 
 function preview(pageName = 'agent') {
   const payload = { pageName, wxml: read('pages/' + pageName + '/index.wxml'), script: read('pages/' + pageName + '/index.js'), modules: moduleSources() };
-  const css = (read('app.wxss') + '\n' + read('pages/' + pageName + '/index.wxss'))
+  const css = (read('app.wxss') + '\n' + readCss('pages/' + pageName + '/index.wxss'))
     .replace(/(^|\n)page\s*\{/g, '$1body {')
     .replace(/(?<![\w-])(view|text|image|scroll-view)(?![\w-])/g, (tag) => ({ view: 'div', text: 'span', image: 'img', 'scroll-view': 'div' }[tag]))
     .replace(/(-?\d*\.?\d+)rpx/g, 'calc($1 * var(--rpx))')
@@ -154,7 +180,7 @@ function preview(pageName = 'agent') {
 }
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;
-  if (pathname === '/' || pathname === '/record' || pathname === '/night-settings') { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(preview(pathname === '/record' ? 'record' : pathname === '/night-settings' ? 'night-settings' : 'agent')); return; }
+  if (PAGES[pathname]) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(preview(PAGES[pathname])); return; }
   if (!pathname.startsWith('/assets/agent/') && !pathname.startsWith('/assets/record/')) { res.writeHead(404); res.end(); return; }
   const file = path.resolve(root, '.' + decodeURIComponent(pathname));
   if (!file.startsWith(path.join(root, 'assets') + path.sep) || !fs.existsSync(file)) { res.writeHead(404); res.end(); return; }

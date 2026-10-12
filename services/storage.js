@@ -6,7 +6,8 @@ const KEYS = {
   journal: 'sleepwell.journal.v1',
   sleep: 'sleepwell.sleep.v1',
   agentMemory: 'sleepwell.agent-memory.v1',
-  agentFeedback: 'sleepwell.agent-feedback.v1'
+  agentFeedback: 'sleepwell.agent-feedback.v1',
+  accessCode: 'sleepwell.access-code.v1'
 };
 
 function read(key, fallback) {

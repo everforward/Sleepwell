@@ -1,10 +1,13 @@
 @import '../night-settings/index.wxss';
 
-.nm-page { display: flex; flex-direction: column; width: 100%; height: 100vh; background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); }
+.nm-page { display: flex; flex-direction: column; width: 100%; height: 100vh; background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); color: var(--night-text); }
+/* night-settings 的 .ns-page 作用域不覆盖本页，返回键样式在这里补齐 */
+.nm-page .ns-back { position: absolute; left: 16px; bottom: 4px; width: 44px; max-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.nm-page .ns-back image { width: 20px; height: 20px; }
 .nm-scroll { flex: 1; min-height: 0; }
 .nm-content { padding: 24rpx 32rpx 48rpx; }
-.nm-card { padding: 28rpx 30rpx; border: 1rpx solid rgba(232,200,135,.16); border-radius: 20rpx; background: linear-gradient(135deg, rgba(24,48,50,.5), rgba(10,26,28,.44)); box-shadow: 0 8rpx 24rpx rgba(0,0,0,.14); }
+.nm-card { padding: 28rpx 30rpx; border: 1rpx solid var(--night-hairline); border-radius: 28rpx; background: var(--night-panel); box-shadow: 0 10rpx 28rpx rgba(0, 0, 0, .16); animation: rise-in 280ms var(--ease-out) both; }
 .nm-text { display: block; color: #c9d8d3; font-size: 14px; line-height: 2; white-space: pre-wrap; word-break: break-all; }
-.nm-empty { margin-top: 24rpx; color: var(--night-muted); font-size: 13px; text-align: center; }
-.nm-clear { margin-top: 32rpx; min-height: 48px; color: #b87878; font-size: 14px; line-height: 48px; background: transparent; border: 1px solid #4a3535; border-radius: 14rpx; }
+.nm-empty { margin-top: 24rpx; color: var(--night-muted); font-size: 13px; text-align: center; animation: fade-in 240ms ease-out 80ms both; }
+.nm-clear { margin-top: 32rpx; min-height: max(88rpx, 44px); color: var(--night-danger); font-size: 14px; line-height: 1.6; background: rgba(201, 138, 138, .08); border: 1rpx solid rgba(201, 138, 138, .32); border-radius: 999rpx; animation: rise-in 280ms var(--ease-out) 70ms both; }
 .nm-safe-bottom { height: env(safe-area-inset-bottom); }

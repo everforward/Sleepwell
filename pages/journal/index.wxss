@@ -1,3 +1,18 @@
-.journal-page { min-height: 100vh; }
-.topbar-label { color: var(--text-soft); font-size: 24rpx; letter-spacing: 2rpx; }.topbar-spacer { width: 80rpx; }
-.journal-content { padding: 56rpx 48rpx; }.journal-form { margin: 52rpx 0 36rpx; border-top: 1rpx solid var(--line); }.journal-input-row { display: grid; grid-template-columns: 60rpx 1fr; gap: 18rpx; padding: 28rpx 0; border-bottom: 1rpx solid var(--line); }.journal-number { padding-top: 21rpx; color: var(--text-faint); font-size: 20rpx; }.journal-input-row .form-textarea { min-height: 112rpx; border: 0; background: transparent; }.input-placeholder { color: rgba(255,255,255,.2); }.saved-tip { display: block; margin-top: 22rpx; color: var(--accent); font-size: 23rpx; text-align: center; }.past-section { margin-top: 74rpx; }.past-title { color: var(--text-faint); font-size: 23rpx; }.past-entry { padding: 30rpx 0; border-bottom: 1rpx solid var(--line); }.past-date, .past-line { display: block; }.past-date { margin-bottom: 14rpx; color: var(--text-faint); font-size: 21rpx; }.past-line { margin-top: 8rpx; color: var(--text-soft); line-height: 1.65; }
+@import '../../styles/night-theme.wxss';
+
+/* 页内覆盖夜喵主题（不动 app.wxss，避免影响呼吸页 Skyline） */
+.journal-page { min-height: 100vh; color: var(--night-text); background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); }
+.journal-page .topbar-label { color: var(--night-muted); font-size: 24rpx; letter-spacing: 2rpx; }.topbar-spacer { width: 80rpx; }
+.journal-content { padding: 56rpx 48rpx calc(48rpx + env(safe-area-inset-bottom)); animation: rise-in 300ms var(--ease-out) both; }
+.journal-page .page-title { display: block; color: var(--night-text); }
+.journal-page .page-copy { display: block; color: var(--night-muted); }
+.journal-form { display: flex; flex-direction: column; gap: 18rpx; margin: 52rpx 0 36rpx; border-top: 0; }
+.journal-input-row { display: grid; grid-template-columns: 60rpx 1fr; gap: 18rpx; padding: 24rpx; border: 1rpx solid var(--night-hairline); border-radius: 28rpx; background: var(--night-panel); }
+.journal-number { padding-top: 21rpx; color: var(--night-gold); font-family: SimSun, serif; font-size: 20rpx; }
+.journal-input-row .form-textarea { min-height: 112rpx; border: 0; background: transparent; }
+.input-placeholder { color: var(--night-faint); }
+.journal-page .primary-button { min-height: max(96rpx, 44px); border-radius: 999rpx; color: #24312c; font-size: 15px; font-weight: 500; background: linear-gradient(135deg, #f0d49a, #e2bd76); box-shadow: 0 6rpx 24rpx rgba(232, 200, 135, .24); }
+.saved-tip { display: block; margin-top: 22rpx; color: var(--night-gold); font-size: 23rpx; text-align: center; animation: pop-in 240ms var(--ease-spring); }
+.past-section { margin-top: 74rpx; }.past-title { color: var(--night-faint); font-size: 23rpx; }
+.past-entry { padding: 30rpx 0; border-bottom: 1rpx solid var(--night-hairline); }
+.past-date, .past-line { display: block; }.past-date { margin-bottom: 14rpx; color: var(--night-faint); font-size: 21rpx; }.past-line { margin-top: 8rpx; color: var(--night-muted); line-height: 1.65; }
