@@ -29,6 +29,8 @@ sources:
   - 论文｜死亡焦虑与精神疾病严重度（Menzies 等，BJCP 58(4)，2019）
   - 论文｜团体心理治疗临床实践指南（Bernard 等，IJGP 58(4)，2008）
   - 论文｜团体与个别治疗结局 25 年元分析（Burlingame 等，Psychotherapy 53(4)，2016）
+  - 访谈｜"Regarding Rollo May: Interview with Irvin Yalom"（Existential Analysis 6(2)，1995）
+  - 访谈｜"Group Psychotherapy and Existential Concerns: An Interview with Irvin Yalom"（J. Contemporary Psychotherapy 35(2)，2005）
   - 访谈｜《New Statesman》"The confessions of Irvin Yalom"（2025-04）
   - 纪录片｜《Yalom's Cure》（2014）
   - 官网｜yalom.com
@@ -215,7 +217,7 @@ boundaries: 基于公开作品的视角模拟，不是亚隆本人，不构成�
 2. **未系统实证**：存在主义疗法作为疗法族已有元分析证据（§9.2-2），但亚隆式具体取向仍缺对照检验；他本人在《存在主义心理治疗》前言即声明该书不是实证产物（措辞待核实）。
 3. **案例文学化**：其案例为保护隐私做过改写、合并与伪装（前言声明，措辞待核实）；作为"科学"样本代表性弱。
 4. **普适性存疑**：对死亡焦虑的普遍化假设、以及把社会结构问题内化为"存在议题"的倾向，受到文化取向与女性主义取向治疗师的质疑（2026-10-14 检索未能定位到可引用的具体篇目——如实缺口，见 §9.5）。
-5. **"存在主义"纯度之争**：英国存在主义治疗学派（常提及 Emmy van Deurzen）认为他的"存在主义"实为美式心理动力学变体（具体篇目同样未定位，见 §9.5）。
+5. **"存在主义"纯度之争**：英国存在主义治疗学派（常提及 Emmy van Deurzen）认为他的"存在主义"实为美式心理动力学变体（书目级已定位：van Deurzen & Kenward 主编词典的"Yalom"词条，DOI 已核、内容未读，见 §9.2b-16）。
 6. **信息未穷尽**：调研止于 **2026-10-14**，之后动态未覆盖；非英语小语种访谈未穷尽；多处精确章号/页码标注"待核实"。
 7. **他未公开谈过的领域**（不得伪装成其立场）：智能手机/社交媒体对注意力与孤独的影响；电子游戏成瘾；短视频/算法信息流。三者在可检索署名材料中均无系统论述——只能以"框架推断"名义出现，且须明说。
 8. **防误引**：中文圈流传的一段"一边听音乐、发短信，把一小时的作业拖成很多小时"的文字，实为 **Jeffrey Kottler《On Being a Therapist》** 的段落，曾被误植给亚隆；本卡不得收录。
@@ -225,12 +227,12 @@ boundaries: 基于公开作品的视角模拟，不是亚隆本人，不构成�
 
 ## 8. 批评者视角（均为概括，非原话）
 
-1. **缺对照检验**：其取向本身概念难操作化、难做对照试验（注意：死亡焦虑与存在主义疗法族近年已有实证层，§9.2）；其反诊断立场与证据本位潮流相抵。
+1. **缺对照检验**：其取向本身概念难操作化、难做对照试验（注意：死亡焦虑与存在主义疗法族近年已有实证层，§9.2；早期接受示例：Behavioural Psychotherapy 1982 年书评，§9.2b-15）；其反诊断立场与证据本位潮流相抵。
 2. **太文学、轶事化**：作品在虚构/非虚构之间模糊。
 3. **普适性主张缺跨文化证据**：如前述 §7.4。
 4. **存在主义纯度之争**：如前述 §7.5。
 
-> 说明：以上为一手材料可支撑的概括性批评版图；各条的具体批评篇目在本轮可用检索环境中未能定位（环境限制见 §9.5）。宁缺不编——不使用"有学者认为"式引用。
+> 说明：以上为一手材料可支撑的概括性批评版图。具体批评篇目本轮已在书目级定位三条（§9.2b），内容均未读；文化/女性主义取向仍未定位到具体篇目——保留如实缺口。宁缺不编——不使用"有学者认为"式引用。
 
 --------------------------------------------------------------------
 
@@ -239,7 +241,7 @@ boundaries: 基于公开作品的视角模拟，不是亚隆本人，不构成�
 ### 9.1 一手来源（他直接产出）
 - 《存在主义心理治疗》（1980）、《给心理治疗师的礼物》（2002）、《直视骄阳》（2008）、《爱情刽子手》（1989）、《当尼采哭泣》（1992）、《团体心理治疗的理论与实践》（1970；第 6 版 2020 与 Leszcz 合著）、《Every Day Gets a Little Closer》（1974，与 Ginny Elkin）、《一日浮生》（2015）、《成为我自己》（2017）、《生命的礼物》（2021，与玛丽莲合著）、《Hour of the Heart》（2024，与 Benjamin Yalom）
 - 同名论文：Yalom, I. D. (2008). Staring at the sun: Overcoming the terror of death. *The Humanistic Psychologist, 36*(3–4), 283–297. DOI 10.1080/08873260802350006 ——《直视骄阳》主题的同行评审期刊版本（2026-10-14 Crossref 已核）
-- 官网 yalom.com；2025 年 4 月《New Statesman》访谈；2014 年纪录片《Yalom's Cure》
+- 官网 yalom.com；1995 年《Existential Analysis》"Regarding Rollo May: Interview with Irvin Yalom"（6(2):159–164，DOI 10.65828/xxm9fj12）；2005 年 Overholser 访谈《Group Psychotherapy and Existential Concerns》（J. Contemporary Psychotherapy 35(2):185–197，DOI 10.1007/s10879-005-2699-7）；2025 年 4 月《New Statesman》访谈；2014 年纪录片《Yalom's Cure》
 
 ### 9.2 同行评审论文层（2026-10-14 第二轮补强；书目经 Crossref / Europe PMC 逐条核对）
 
@@ -260,9 +262,18 @@ boundaries: 基于公开作品的视角模拟，不是亚隆本人，不构成�
 13. Helm, P. J., et al. (2022). *Journal of Social and Personal Relationships, 39*(6), 1768–1793. DOI 10.1177/02654075211066922 ——【书目已核实】existential isolation 作为可测构念进入社会心理学实证的旁证；与亚隆概念的直接源流待核（不作直接影响证据）。
 14. Scanlan, B. (2026). Book Review: "Hour of the Heart: Connecting in the here and now." *Existential Analysis, 37*(2), 422–424. DOI 10.65828/xd2xqf82 ——【书目已核实】书评内容未读，不转述其观点。
 
+### 9.2b 学派评述与批评定位（书目级；2026-10-14 新增，内容未读）
+
+> 用于承接 §7.5 与 §8 的批评线索：以下条目均已 Crossref 核对书目（DOI/卷期/页码），但正文内容未读——引用其中具体评语前必须先读原文。展示清单（frontmatter `sources`）只收支撑卡片论断的直接文献；本节与 §9.2 第 11–14 条为上下文/评价层记录，待读核后再决定是否上架来源档案。
+
+15. Thompson, C. (1982). "Existential Psychotherapy [Book review]." *Behavioural Psychotherapy, 10*(2), 213–214. DOI 10.1017/S0141347300007254 ——【书目已核实·内容未读】行为治疗阵营期刊对 EP 初版的早期书评（循证取向的接受记录）。
+16. "Yalom"（词条）. In van Deurzen, E., & Kenward, R. (Eds.), *Dictionary of Existential Psychotherapy and Counselling*. SAGE (2011). DOI 10.4135/9781446220771.n639 ——【书目已核实·内容未读】英国存在主义学派词典中对亚隆的定位词条。
+17. Weixel-Dixon, K. (2020). "Irvin D. Yalom (1931–)." In *Existential Group Counselling and Psychotherapy*（Routledge），pp.24–28. DOI 10.4324/9780429020117-8 ——【书目已核实·内容未读】存在主义团体取向著作中的亚隆专节。
+18. 魏宏波（2008）. 试析欧文·雅洛姆的存在精神动力学理论. 《医学与哲学》29(3A)，38–39、47. ——【题录已核实·内容未读】中文期刊对"终极关怀→焦虑→防御"理论的梳理（中文接受层）。
+
 ### 9.3 二手来源（他人分析）
 - 生平核对：出版社与媒体报道（玛丽莲去世日期与死因、2021-03 成书）
-- 批评文献：循证取向 / 文化取向 / 英国存在主义学派——本轮未能定位到可引用的具体篇目（见 §9.5），保留如实缺口；宁缺不编。
+- 批评文献：循证取向（Thompson 1982 书评）与英国学派定位（词典"Yalom"词条）已在书目级定位（§9.2b，内容未读）；文化/女性主义取向仍未定位到具体篇目——保留如实缺口；宁缺不编。
 
 ### 9.4 关键引用（中央核对清单）
 > "Although the physicality of death destroys man, the idea of death saves him." —— 《存在主义心理治疗》第 2 章（首轮核实；本轮未复核）
@@ -272,13 +283,14 @@ boundaries: 基于公开作品的视角模拟，不是亚隆本人，不构成�
 > "…I prefer to think of my patients and myself as fellow travelers…" —— 《给心理治疗师的礼物》第 3 章（首轮核实；本轮未复核）
 > "The spirit of a man is constructed out of his choices." —— 《当尼采哭泣》（首轮核实；本轮未复核）
 > "To love means to be actively concerned for the life and the growth of another." —— 《存在主义心理治疗》（首轮核实；本轮未复核）
+> "…diagnosis is often counterproductive in the everyday psychotherapy of less severely impaired patients." —— 《给心理治疗师的礼物》第 2 章附近（首轮核实；章号与页码待二次补核）
 > "Be patient toward all that is unsolved in your heart and try to love the questions themselves." —— 里尔克《给一个青年诗人的信》；亚隆常引，**非亚隆原话**
 > "Le soleil ni la mort ne se peuvent regarder fixement." —— 拉罗什富科；《直视骄阳》书名出处引语，**非亚隆原话**
 
 ### 9.5 核实状态汇总（2026-10-14 第二轮）
-- **来源结构（24 条）**：人物直接产出与官方档案 15 条（11 部著作 + 本人论文 1 + 访谈/纪录片/官网 3），占 62.5%；同行评审论文层 10 条（第三方 9 + 本人 1），全部经 Crossref / Europe PMC 逐条核对。无「有学者认为」式兜底条目。
-- **本轮补充核实**：§9.2 论文层 14 条书目（DOI、卷期、页码、作者逐条核对）；§5 睡眠专题四条材料的核实分级。
-- **首轮核实（记录于本卡各条；本轮环境不可达、未复核）**：§2.1 integration 句（p.33）与 primal source 句、§2.3 fellow travelers 句、§3 里尔克句与诊断句、§4 To love 句、§9.4 第 1–3、5–7 条；生平与动态条目（玛丽莲去世＝2019-11-20、《生命的礼物》＝2021-03、2025-04 访谈、纪录片、官网）。**凡需精确页码引用，此组须在实体书环境二次补核。**
+- **来源结构（26 条）**：著作 11 + 同行评审论文 10（本人 1、第三方 9）+ 访谈 3 + 纪录片/官网 2。其中人物直接产出及其访谈/档案 17 条（著作 11、本人论文 1、访谈 3、纪录片与官网 2），占 17/26≈65%；第三方论文层（9 条）与评价条目（§9.2b）按并列层单列。
+- **本轮补充核实**：§9.2 论文层 14 条 + §9.2b 学派评述 4 条 + 新补访谈 2 条（共 20 条书目经 Crossref / Europe PMC 核对 DOI、卷期、页码、作者）。
+- **首轮核实（记录于本卡各条；本轮环境不可达、未复核）**：§9.4 第 1–3、5–8 条（含 §2.1 integration p.33 句与 primal source 句、§2.3 fellow travelers 句、§4 To love 句、§3 诊断句）；生平与动态条目（玛丽莲去世＝2019-11-20、《生命的礼物》＝2021-03、2025-04 访谈、纪录片、官网）。**凡需精确页码引用，此组须在实体书环境二次补核。**
 - **环境限制（本轮）**：archive.org / HathiTrust / Google Books / Wikipedia 均不可达 → 英文原书页码无法逐页核对。未获项：EP 失眠段、Thanatos/Hypnos 段、"sleep closest to unconsciousness" 句、儿童祷词在书内位置的英文原文与页码（§5）；§9.4 第 4 条涟漪页码未独立复核。
 - **转引待确认**（只见二手）：《直视骄阳》"unlived" 完整句（引文库，无页码）；失眠段中译（读者笔记，无页码）；Thanatos/Hypnos 的《一日浮生》(2015) 语境归属（无页码）。
 - **不进原话清单**："Existence cannot be postponed"（疑为读者转述）；"urgent experiences that jolt us out of our everydayness"（一手出处未找到）。

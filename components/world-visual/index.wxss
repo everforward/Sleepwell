@@ -17,15 +17,21 @@
 .world--moon { --scene: #efe8c8; --scene-rgb: 239, 232, 200; }
 .world--water { --scene: #a9d2ce; --scene-rgb: 169, 210, 206; }
 .world--stardust { --scene: #d6d8c8; --scene-rgb: 214, 216, 200; }
-.starfield-texture { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
-.starfield-bright { opacity: 0; transform: scale(1); transition: opacity 8s linear, transform 8s ease-in-out; }
-.starfield-breath-glow { position: absolute; left: 22%; top: 30%; width: 56%; height: 40%; border-radius: 50%; background: radial-gradient(ellipse, rgba(132,191,225,.2), rgba(51,112,155,.06) 45%, transparent 72%); opacity: .25; transform: scale(.8); transition: opacity 8s linear, transform 8s ease-in-out; pointer-events: none; }
-.phase--inhale .starfield-bright { opacity: 1; transform: scale(1.035); transition-duration: 4s; }
-.phase--inhale .starfield-breath-glow { opacity: 1; transform: scale(1.2); transition-duration: 4s; }
-.phase--hold .starfield-bright { opacity: 1; transform: scale(1.035); transition-duration: 0s; }
-.phase--hold .starfield-breath-glow { opacity: 1; transform: scale(1.2); transition-duration: 0s; }
-.phase--idle .starfield-bright, .phase--completed .starfield-bright { opacity: 0; transform: scale(1); transition-duration: .6s; }
-.phase--idle .starfield-breath-glow, .phase--completed .starfield-breath-glow { opacity: .25; transform: scale(.8); transition-duration: .6s; }
+.world--stardust { background: #030b13; }
+
+.starfield-animation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.world--stardust .ambient,
+.world--stardust .ambient-particle,
+.world--stardust .vignette {
+  display: none;
+}
 .world--firefly { --scene: #dce89b; --scene-rgb: 220, 232, 155; }
 .world--warmLight { --scene: #f2c99f; --scene-rgb: 242, 201, 159; }
 .world--orb { --scene: #c6e0d4; --scene-rgb: 198, 224, 212; }

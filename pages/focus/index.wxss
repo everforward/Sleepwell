@@ -2,7 +2,17 @@
 
 /* 页内覆盖夜喵主题（不动 app.wxss，避免影响呼吸页 Skyline） */
 .focus-page { min-height: 100vh; color: var(--night-text); background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); }
-.focus-page .topbar-label { color: var(--night-muted); font-size: 24rpx; letter-spacing: 2rpx; }.topbar-spacer { width: 80rpx; }
+.topbar-spacer { width: 80rpx; }
+/* 返回键沿用基线定制箭头（焦点页专属样式），文字并入夜色 */
+.focus-topbar { display: block; padding-left: 16rpx; }
+.focus-topbar .focus-back { position: absolute; left: 8px; right: auto; bottom: 0; display: flex; align-items: center; justify-content: center; width: 48px; min-width: 48px; height: 48px; margin: 0; padding: 0; transform: none; border-radius: 8px; color: rgba(240,247,244,.9); background: transparent; }
+.focus-back--pressed { background: rgba(255,255,255,.08); }
+.focus-back-icon { position: relative; width: 24px; height: 24px; pointer-events: none; }
+.focus-back-line { position: absolute; height: 2px; border-radius: 1px; background: currentColor; }
+.focus-back-line--upper { left: 2px; top: 11px; width: 11px; transform-origin: 1px center; transform: rotate(-45deg); }
+.focus-back-line--lower { left: 2px; top: 11px; width: 11px; transform-origin: 1px center; transform: rotate(45deg); }
+.focus-back-line--stem { left: 3px; top: 11px; width: 19px; }
+.focus-topbar .topbar-label { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); color: var(--night-muted); font-size: 28rpx; line-height: 20px; letter-spacing: 0; }
 .focus-content { padding: 56rpx 48rpx 72rpx; animation: rise-in 300ms var(--ease-out) both; }
 .focus-content .page-title { display: block; max-width: 580rpx; color: var(--night-text); }
 .focus-page .page-copy { display: block; color: var(--night-muted); }

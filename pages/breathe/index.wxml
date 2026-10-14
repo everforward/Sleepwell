@@ -1,4 +1,8 @@
 <view class="page-shell breathe-page world-bg--{{previewWorld || settings.world}}">
+  <view wx:if="{{(previewWorld || settings.world) === 'stardust'}}" class="starfield-page-background" style="{{starfieldStyle}}" aria-label="星空海">
+    <image class="starfield-frame" src="/assets/animation/starfield-figma-a.png" mode="aspectFit"></image>
+    <image class="starfield-frame starfield-frame--blend" src="/assets/animation/starfield-figma-b.png" mode="aspectFit"></image>
+  </view>
   <view class="topbar" style="{{nav.topbarStyle}}">
     <view class="topbar-leading">
       <button class="icon-button icon-button--exit" bindtap="exitMiniProgram" aria-label="退出小程序">
@@ -51,7 +55,7 @@
     catchtouchcancel="handlePressCancel"
     aria-label="按住吸气，松开呼气"
   >
-    <world-visual world="{{previewWorld || settings.world}}" phase="{{phase}}" cycles="{{cycles}}" target-cycles="{{settings.targetCycles}}"></world-visual>
+    <world-visual wx:if="{{(previewWorld || settings.world) !== 'stardust'}}" world="{{previewWorld || settings.world}}" phase="{{phase}}" cycles="{{cycles}}" target-cycles="{{settings.targetCycles}}"></world-visual>
     <view class="breath-orb breath-orb--{{phase}}">
       <view class="breath-orb__halo breath-orb__halo--outer"></view>
       <view class="breath-orb__halo breath-orb__halo--inner"></view>
@@ -75,7 +79,7 @@
       <image class="nav-icon" src="/assets/agent/icons/cat-muted.png" aria-hidden="true"></image>
       <text>夜喵</text>
     </button>
-    <button class="nav-item nav-item--world is-selected" bindlongpress="openWorldPicker" bindtap="noop" aria-label="长按切换呼吸世界">
+    <button class="nav-item nav-item--world is-selected" bindtap="openWorldPicker" aria-label="切换呼吸世界">
       <view class="nav-icon world-nav-icon" aria-hidden="true">
         <view class="world-nav-icon__core"></view>
         <view class="world-nav-icon__ray world-nav-icon__ray--top"></view>
@@ -110,34 +114,32 @@
   <view class="sheet-mask {{showWorldPicker ? 'is-open' : ''}}" catchtap="closeWorldPicker">
     <view class="bottom-sheet world-sheet" catchtap="noop">
       <view class="sheet-handle"></view>
-      <button class="sheet-close" catchtap="closeWorldPicker" aria-label="关闭场景选择"><view class="close-icon"></view></button>
-      <text class="sheet-kicker">在一个世界里呼吸</text>
-      <view class="world-wheel">
-        <view class="wheel-center">
-          <text class="wheel-glyph">{{currentWorld.glyph}}</text>
-          <text>{{currentWorld.name}}</text>
-        </view>
+      <view class="world-sheet-header">
+        <text class="world-sheet-title">呼吸世界</text>
+      </view>
+      <scroll-view class="world-options-scroll" scroll-y="{{true}}">
+      <view class="world-options">
         <button
           wx:for="{{worlds}}"
           wx:key="id"
-          class="world-option world-option--{{index}} {{item.id === (previewWorld || settings.world) ? 'is-selected' : ''}}"
+          class="world-option {{item.id === settings.world ? 'is-selected' : ''}}"
           data-world="{{item.id}}"
-          catchtouchstart="previewWorld"
-          catchtouchend="chooseWorld"
-          bindtap="chooseWorld"
+          catchtap="chooseWorld"
+          hover-class="world-option--pressed"
+          aria-label="{{item.name}}{{item.id === settings.world ? '，当前场景' : ''}}"
         >
           <text class="world-option__glyph">{{item.glyph}}</text>
           <text class="world-option__name">{{item.name}}</text>
+          <view class="world-selection {{item.id === settings.world ? 'world-selection--active' : ''}}"><view wx:if="{{item.id === settings.world}}" class="world-selection-dot"></view></view>
         </button>
       </view>
-      <text class="world-tip">触碰选择 · 松开确认</text>
+      </scroll-view>
     </view>
   </view>
 
   <view class="sheet-mask {{showSettings ? 'is-open' : ''}}" catchtap="closeSettings">
     <view class="bottom-sheet" catchtap="noop">
       <view class="sheet-handle"></view>
-      <button class="sheet-close" catchtap="closeSettings" aria-label="关闭呼吸设置"><view class="close-icon"></view></button>
       <text class="sheet-title">呼吸设置</text>
       <button class="setting-row" bindtap="openWorldPickerFromSettings">
         <text class="setting-label">我的呼吸世界</text>

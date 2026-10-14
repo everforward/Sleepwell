@@ -69,9 +69,12 @@
   </block>
 
   <block wx:elif="{{world === 'stardust'}}">
-    <image class="starfield-texture starfield-rest" src="/assets/animation/starfield-rest.jpg" mode="aspectFill" aria-hidden="true"/>
-    <image class="starfield-texture starfield-bright" src="/assets/animation/starfield-inhale.jpg" mode="aspectFill" aria-hidden="true"/>
-    <view class="starfield-breath-glow" aria-hidden="true"></view>
+    <image
+      class="starfield-animation"
+      src="/assets/animation/starfield-figma-a.png"
+      mode="aspectFit"
+      aria-label="星空呼吸动画"
+    ></image>
   </block>
 
   <block wx:elif="{{world === 'firefly'}}">

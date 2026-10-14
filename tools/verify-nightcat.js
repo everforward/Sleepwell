@@ -361,7 +361,7 @@ async function main() {
       ['/sound', 'preview-sound.png', '.sound-row, .play-button, .timer-options button, .icon-button--back'],
       ['/journal', 'preview-journal.png', '.primary-button, .icon-button--back'],
       ['/sleep', 'preview-sleep.png', '.feeling-button, .primary-button, .time-field, .icon-button--back'],
-      ['/focus', 'preview-focus.png', '.primary-button, .icon-button--back']
+      ['/focus', 'preview-focus.png', '.primary-button, .icon-button--back, .focus-back']
     ];
     const secondaryReports = {};
     for (const [route, shot, tapSelector] of secondary) {
