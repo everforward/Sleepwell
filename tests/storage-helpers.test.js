@@ -31,7 +31,30 @@ test('clears each personal record category without touching settings', () => {
     getStorageSync() { return null; }
   };
   assert.equal(storage.clearPersonalRecords(), true);
-  assert.deepEqual(writes.map((item) => item[0]).sort(), [storage.KEYS.agentFeedback, storage.KEYS.agentMemory, storage.KEYS.journal, storage.KEYS.sessions, storage.KEYS.sleep].sort());
+  assert.deepEqual(
+    writes.map((item) => item[0]).sort(),
+    [storage.KEYS.agentFacts, storage.KEYS.agentFeedback, storage.KEYS.agentMemory, storage.KEYS.agentMessages, storage.KEYS.agentReviews, storage.KEYS.agentTasks, storage.KEYS.agentThoughts, storage.KEYS.journal, storage.KEYS.sessions, storage.KEYS.sleep].sort()
+  );
   assert.equal(writes.some((item) => item[0] === storage.KEYS.settings), false);
+  delete global.wx;
+});
+
+test('getSettings deep-merges skill permissions so new skills reach existing installs', () => {
+  const store = {
+    [storage.KEYS.settings]: {
+      skillPermissions: { play_sound: 'off' },
+      breathPatternVersion: 2
+    }
+  };
+  global.wx = {
+    getStorageSync: (key) => (key in store ? store[key] : ''),
+    setStorageSync(key, value) { store[key] = value; }
+  };
+  const settings = storage.getSettings();
+  // 老用户保存过的选择保留
+  assert.equal(settings.skillPermissions.play_sound, 'off');
+  // 同一份旧设置里没见过的技能拿到出厂默认
+  assert.equal(settings.skillPermissions.dream_log, 'auto');
+  assert.equal(settings.skillPermissions.bedtime_pledge, 'confirm');
   delete global.wx;
 });

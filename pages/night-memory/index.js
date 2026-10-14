@@ -18,7 +18,7 @@ Page({
   clearMemory() {
     wx.showModal({
       title: '清除聊天记忆？',
-      content: '夜喵会忘记和你聊过的话题。练习、睡眠和日记记录会保留。',
+      content: '夜喵会忘记和你聊过的话题、你让它记住的事、寄存在它这里的心事，以及你留下的评价。练习、睡眠和日记记录会保留。',
       confirmText: '清除',
       confirmColor: '#b87878',
       success: ({ confirm }) => {

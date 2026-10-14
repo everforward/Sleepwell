@@ -25,33 +25,33 @@
       },
       "welcome": {
         "top": 223.578125,
-        "bottom": 294.96875,
+        "bottom": 270.0625,
         "left": 13.640625,
         "right": 306.359375,
         "width": 292.71875,
-        "height": 71.390625
+        "height": 46.484375
       },
       "topics": {
-        "top": 303.5,
-        "bottom": 398.3125,
+        "top": 278.59375,
+        "bottom": 373.40625,
         "left": 13.640625,
         "right": 306.359375,
         "width": 292.71875,
         "height": 94.8125
       },
       "practice": {
-        "top": 406.84375,
-        "bottom": 469.90625,
+        "top": 381.9375,
+        "bottom": 450.46875,
         "left": 13.640625,
         "right": 306.359375,
         "width": 292.71875,
-        "height": 63.0625
+        "height": 68.53125
       },
       "topicChips": [
         {
           "label": "考试焦虑",
-          "top": 303.5,
-          "bottom": 347.5,
+          "top": 278.59375,
+          "bottom": 322.59375,
           "left": 13.640625,
           "right": 156.59375,
           "width": 142.953125,
@@ -59,8 +59,8 @@
         },
         {
           "label": "论文 / 科研压力",
-          "top": 303.5,
-          "bottom": 347.5,
+          "top": 278.59375,
+          "bottom": 322.59375,
           "left": 163.40625,
           "right": 306.359375,
           "width": 142.953125,
@@ -68,8 +68,8 @@
         },
         {
           "label": "宿舍难以放松",
-          "top": 354.3125,
-          "bottom": 398.3125,
+          "top": 329.40625,
+          "bottom": 373.40625,
           "left": 13.640625,
           "right": 156.59375,
           "width": 142.953125,
@@ -77,8 +77,8 @@
         },
         {
           "label": "脑子停不下来",
-          "top": 354.3125,
-          "bottom": 398.3125,
+          "top": 329.40625,
+          "bottom": 373.40625,
           "left": 163.40625,
           "right": 306.359375,
           "width": 142.953125,
@@ -86,11 +86,11 @@
         }
       ],
       "guideButton": {
-        "top": 416.375,
-        "bottom": 460.375,
-        "left": 213.3125,
+        "top": 444.352294921875,
+        "bottom": 488.352294921875,
+        "left": 24.015625,
         "right": 295.984375,
-        "width": 82.671875,
+        "width": 271.96875,
         "height": 44
       },
       "navItems": [
@@ -149,34 +149,34 @@
         "height": 98
       },
       "welcome": {
-        "top": 262,
-        "bottom": 337.375,
+        "top": 292,
+        "bottom": 338.78125,
         "left": 16,
         "right": 359,
         "width": 343,
-        "height": 75.375
+        "height": 46.78125
       },
       "topics": {
-        "top": 347.375,
-        "bottom": 443.375,
+        "top": 350.78125,
+        "bottom": 446.78125,
         "left": 16,
         "right": 359,
         "width": 343,
         "height": 96
       },
       "practice": {
-        "top": 453.375,
-        "bottom": 534.96875,
+        "top": 458.78125,
+        "bottom": 538.78125,
         "left": 16,
         "right": 359,
         "width": 343,
-        "height": 81.59375
+        "height": 80
       },
       "topicChips": [
         {
           "label": "考试焦虑",
-          "top": 347.375,
-          "bottom": 391.375,
+          "top": 350.78125,
+          "bottom": 394.78125,
           "left": 16,
           "right": 183.5,
           "width": 167.5,
@@ -184,8 +184,8 @@
         },
         {
           "label": "论文 / 科研压力",
-          "top": 347.375,
-          "bottom": 391.375,
+          "top": 350.78125,
+          "bottom": 394.78125,
           "left": 191.5,
           "right": 359,
           "width": 167.5,
@@ -193,8 +193,8 @@
         },
         {
           "label": "宿舍难以放松",
-          "top": 399.375,
-          "bottom": 443.375,
+          "top": 402.78125,
+          "bottom": 446.78125,
           "left": 16,
           "right": 183.5,
           "width": 167.5,
@@ -202,8 +202,8 @@
         },
         {
           "label": "脑子停不下来",
-          "top": 399.375,
-          "bottom": 443.375,
+          "top": 402.78125,
+          "bottom": 446.78125,
           "left": 191.5,
           "right": 359,
           "width": 167.5,
@@ -211,11 +211,11 @@
         }
       ],
       "guideButton": {
-        "top": 472.171875,
-        "bottom": 516.171875,
-        "left": 259,
+        "top": 531.78125,
+        "bottom": 575.78125,
+        "left": 28,
         "right": 347,
-        "width": 88,
+        "width": 319,
         "height": 44
       },
       "navItems": [
@@ -274,34 +274,34 @@
         "height": 107.203125
       },
       "welcome": {
-        "top": 300.421875,
-        "bottom": 379.734375,
+        "top": 334.828125,
+        "bottom": 381.890625,
         "left": 18.34375,
         "right": 411.65625,
         "width": 393.3125,
-        "height": 79.3125
+        "height": 47.0625
       },
       "topics": {
-        "top": 391.1875,
-        "bottom": 501.265625,
+        "top": 395.640625,
+        "bottom": 505.71875,
         "left": 18.34375,
         "right": 411.65625,
         "width": 393.3125,
         "height": 110.078125
       },
       "practice": {
-        "top": 512.71875,
-        "bottom": 601.828125,
+        "top": 519.46875,
+        "bottom": 610.890625,
         "left": 18.34375,
         "right": 411.65625,
         "width": 393.3125,
-        "height": 89.109375
+        "height": 91.421875
       },
       "topicChips": [
         {
           "label": "考试焦虑",
-          "top": 391.1875,
-          "bottom": 441.640625,
+          "top": 395.640625,
+          "bottom": 446.09375,
           "left": 18.34375,
           "right": 210.40625,
           "width": 192.0625,
@@ -309,8 +309,8 @@
         },
         {
           "label": "论文 / 科研压力",
-          "top": 391.1875,
-          "bottom": 441.640625,
+          "top": 395.640625,
+          "bottom": 446.09375,
           "left": 219.578125,
           "right": 411.65625,
           "width": 192.078125,
@@ -318,8 +318,8 @@
         },
         {
           "label": "宿舍难以放松",
-          "top": 450.8125,
-          "bottom": 501.265625,
+          "top": 455.265625,
+          "bottom": 505.71875,
           "left": 18.34375,
           "right": 210.40625,
           "width": 192.0625,
@@ -327,8 +327,8 @@
         },
         {
           "label": "脑子停不下来",
-          "top": 450.8125,
-          "bottom": 501.265625,
+          "top": 455.265625,
+          "bottom": 505.71875,
           "left": 219.578125,
           "right": 411.65625,
           "width": 192.078125,
@@ -336,11 +336,11 @@
         }
       ],
       "guideButton": {
-        "top": 535.265625,
-        "bottom": 579.265625,
-        "left": 304.78125,
+        "top": 603.007080078125,
+        "bottom": 647.007080078125,
+        "left": 31.953125,
         "right": 398.046875,
-        "width": 93.265625,
+        "width": 366.09375,
         "height": 44
       },
       "navItems": [
@@ -390,9 +390,44 @@
     "wrongCodeRejected": true,
     "code": "configured"
   },
+  "panel": {
+    "titles": 2,
+    "experts": 0,
+    "skills": 4,
+    "sounds": 4,
+    "height": 208,
+    "streamHeight": 410.3,
+    "bottom": 812
+  },
+  "drawer": {
+    "experts": 2,
+    "actions": 2,
+    "lullabies": 3,
+    "channels": 2,
+    "badges": 3,
+    "chevrons": 2,
+    "tags": 1,
+    "width": 285,
+    "right": 375
+  },
+  "expert": {
+    "selected": "yalom",
+    "starters": 3,
+    "cleared": true,
+    "lullabyToast": true,
+    "channelToast": true,
+    "newSession": true,
+    "xClose": true,
+    "maskClose": true
+  },
+  "practice": {
+    "collapsed": 80,
+    "expanded": 133,
+    "guide": 44
+  },
   "keyboardRow": {
     "x": 0,
-    "y": 409,
+    "y": 408,
     "width": 375,
     "height": 103
   },

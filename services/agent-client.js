@@ -13,6 +13,7 @@ try {
 const stream = require('../utils/llm-stream');
 const guide = require('../utils/agent-guide');
 const registry = require('../skills/registry');
+const pushCards = require('./agent-push');
 const accessCode = require('./access-code');
 
 const REC_MARKER = '@@REC@@';
@@ -27,15 +28,17 @@ const TOPIC_LABELS = {
   thoughts: '脑子停不下来'
 };
 
-function buildSystemPrompt(topic, context, persona) {
+function buildSystemPrompt(topic, context, persona, expert) {
   const topicLine = topic && TOPIC_LABELS[topic] ? `用户选择的倾诉话题是「${TOPIC_LABELS[topic]}」。` : '';
   const contextBlock = context ? `\n${context}\n` : '';
   const personaBlock = persona ? `\n${persona}\n` : '';
+  const expertBlock = expert ? `\n${expert}\n` : '';
   const skillBlock = registry.buildSkillPromptSection();
   return [
     '你是“夜喵”，一个面向大学生的深夜睡前陪伴 AI，帮助用户在睡前放下压力、慢慢平静。',
     topicLine,
     personaBlock,
+    expertBlock,
     contextBlock,
     '对话规则：',
     '- 语气温暖、平静、不评判，像一位可靠的朋友在深夜陪伴。',
@@ -50,6 +53,7 @@ function buildSystemPrompt(topic, context, persona) {
     '- 示例（只示意格式，不要照抄内容）：用户说“我现在只想安静下来睡一觉”，你回复“今晚就先放下这些吧。”后另起一行输出标记与 JSON。',
     '- 仍然在倾听阶段、用户明显还想继续倾诉时，才不要输出推荐标记。',
     '- 用户明确点名要听某个声音或要关掉声音时，用播放/停止技能直接执行，不要用推荐卡片。',
+    pushCards.buildPromptSection(),
     skillBlock
   ].filter(Boolean).join('\n');
 }
@@ -81,32 +85,59 @@ function extractBalancedJson(payload) {
   return end === -1 ? null : text.slice(0, end);
 }
 
-// 把模型完整输出拆成「可见文本 + 推荐卡片 + 技能调用」。
-// @@REC@@ 与 @@DO@@ 互斥，取先出现者；流式期间 JSON 未闭合时对应项为 null。
+// 截取 payload 中第一个括号平衡的 JSON 数组文本；未闭合返回 null。
+function extractBalancedArray(payload) {
+  const text = String(payload || '');
+  let end = -1;
+  for (let i = 0, depth = 0, started = false; i < text.length; i += 1) {
+    const ch = text[i];
+    if (ch === '[') { depth += 1; started = true; }
+    else if (ch === ']') depth -= 1;
+    if (started && depth === 0) { end = i + 1; break; }
+  }
+  return end === -1 ? null : text.slice(0, end);
+}
+
+function safeParse(json, sanitize) {
+  if (!json) return null;
+  try {
+    return sanitize(JSON.parse(json));
+  } catch (error) {
+    return null;
+  }
+}
+
+// 把模型完整输出拆成「可见文本 + 推荐卡片 + 推送卡片 + 选项提问 + 技能调用」。
+// 四类标记（@@REC@@ / @@PUSH@@ / @@ASK@@ / @@DO@@）互斥，取先出现者；流式期间 JSON 未闭合时对应项为 null。
 function splitResponse(fullText) {
   const text = String(fullText || '');
-  const doIndex = text.indexOf(registry.DO_MARKER);
-  const recIndex = text.indexOf(REC_MARKER);
-  const hasDo = doIndex !== -1 && (recIndex === -1 || doIndex < recIndex);
-  const markerIndex = hasDo ? doIndex : recIndex;
-  if (markerIndex === -1) return { text: text.trim(), recommendation: null, skillCall: null };
-  const visible = text.slice(0, markerIndex).trim();
-  if (hasDo) {
+  const markers = [
+    { kind: 'do', index: text.indexOf(registry.DO_MARKER), marker: registry.DO_MARKER },
+    { kind: 'rec', index: text.indexOf(REC_MARKER), marker: REC_MARKER },
+    { kind: 'push', index: text.indexOf(pushCards.PUSH_MARKER), marker: pushCards.PUSH_MARKER },
+    { kind: 'ask', index: text.indexOf(pushCards.ASK_MARKER), marker: pushCards.ASK_MARKER }
+  ].filter((item) => item.index !== -1).sort((a, b) => a.index - b.index);
+  if (!markers.length) return { text: text.trim(), recommendation: null, skillCall: null, push: null, ask: null };
+  const chosen = markers[0];
+  const base = { text: text.slice(0, chosen.index).trim(), recommendation: null, skillCall: null, push: null, ask: null };
+  if (chosen.kind === 'do') {
     const parsed = registry.parseSkillCall(text);
-    if (!parsed) return { text: visible, recommendation: null, skillCall: null }; // JSON 未闭合
-    if (parsed.invalid) return { text: visible, recommendation: null, skillCall: { invalid: true } };
-    return { text: visible, recommendation: null, skillCall: { skill: parsed.skill, args: parsed.args } };
+    if (!parsed) return base; // JSON 未闭合
+    return Object.assign(base, { skillCall: parsed.invalid ? { invalid: true } : { skill: parsed.skill, args: parsed.args } });
   }
-  const json = extractBalancedJson(text.slice(markerIndex + REC_MARKER.length));
-  let recommendation = null;
-  if (json) {
-    try {
-      recommendation = sanitizeRecommendation(JSON.parse(json));
-    } catch (error) {
-      recommendation = null;
-    }
+  if (chosen.kind === 'rec') {
+    return Object.assign(base, {
+      recommendation: safeParse(extractBalancedJson(text.slice(chosen.index + REC_MARKER.length)), sanitizeRecommendation)
+    });
   }
-  return { text: visible, recommendation, skillCall: null };
+  if (chosen.kind === 'push') {
+    return Object.assign(base, {
+      push: safeParse(extractBalancedArray(text.slice(chosen.index + pushCards.PUSH_MARKER.length)), pushCards.sanitizePush)
+    });
+  }
+  return Object.assign(base, {
+    ask: safeParse(extractBalancedJson(text.slice(chosen.index + pushCards.ASK_MARKER.length)), pushCards.sanitizeAsk)
+  });
 }
 
 // 向后兼容旧签名：只取文本与推荐。
@@ -142,12 +173,12 @@ function gatewayHeaders() {
 
 function chat(options) {
   const opts = options || {};
-  const { topic = '', history = [], answers = [], context = '', persona = '' } = opts;
+  const { topic = '', history = [], answers = [], context = '', persona = '', expert = '' } = opts;
   const onDelta = typeof opts.onDelta === 'function' ? opts.onDelta : null;
   const onComplete = typeof opts.onComplete === 'function' ? opts.onComplete : null;
   const onError = typeof opts.onError === 'function' ? opts.onError : null;
 
-  const messages = [{ role: 'system', content: buildSystemPrompt(topic, context, persona) }].concat(mapHistory(history));
+  const messages = [{ role: 'system', content: buildSystemPrompt(topic, context, persona, expert) }].concat(mapHistory(history));
   let full = '';
   let settled = false;
   let aborted = false;
@@ -168,13 +199,13 @@ function chat(options) {
     // 保留已有内容收尾，不要用规则话术整段覆盖，避免体验断裂。
     const partial = splitResponse(full);
     if (partial.text) {
-      completeOnce({ text: partial.text, recommendation: partial.recommendation, fallback: true });
+      completeOnce({ text: partial.text, recommendation: partial.recommendation, push: partial.push, ask: partial.ask, fallback: true });
       return;
     }
     const result = guide.next(topic, answers);
     const reply = result.reply || '我在这里，今晚慢慢来。';
     if (onDelta) onDelta(reply);
-    completeOnce({ text: reply, recommendation: result.recommendation || null, fallback: true });
+    completeOnce({ text: reply, recommendation: result.recommendation || null, push: null, ask: null, fallback: true });
   }
 
   function handlePayload(payload) {
@@ -199,7 +230,7 @@ function chat(options) {
           if (typeof content === 'string' && content) {
             const parsed = splitResponse(content);
             if (onDelta) onDelta(parsed.text);
-            completeOnce({ text: parsed.text, recommendation: parsed.recommendation, fallback: false });
+            completeOnce({ text: parsed.text, recommendation: parsed.recommendation, push: parsed.push, ask: parsed.ask, fallback: false });
           } else {
             fallback();
           }
@@ -262,4 +293,4 @@ function chat(options) {
   };
 }
 
-module.exports = { chat, splitResponse, splitRecommendation, sanitizeRecommendation, buildSystemPrompt, gatewayHeaders, REC_MARKER };
+module.exports = { chat, splitResponse, splitRecommendation, sanitizeRecommendation, buildSystemPrompt, gatewayHeaders, extractBalancedArray, REC_MARKER };

@@ -4,6 +4,7 @@
 
 const storage = require('../services/storage');
 const agentMemory = require('../services/agent-memory');
+const agentTasks = require('../services/agent-tasks');
 const agentPersona = require('./agent-persona');
 const nightPreferences = require('../services/night-preferences');
 
@@ -58,10 +59,24 @@ function buildMemoryLine() {
   return `用户上次和夜喵聊天（${agentMemory.formatWhen(last.at)}）聊到：${last.summary}。`;
 }
 
+function buildFactLine() {
+  const enabled = safeRead(() => nightPreferences.read().memoryEnabled, false);
+  if (!enabled) return '';
+  const list = safeRead(() => agentMemory.facts(), []).slice(0, 5);
+  if (!list.length) return '';
+  return `用户让你记住的事：${list.map((item) => item.text).join('；')}。`;
+}
+
+function buildTaskLine() {
+  const briefs = safeRead(() => agentTasks.pendingBrief(), []);
+  if (!briefs.length) return '';
+  return `你和用户的约定：${briefs.join('；')}。到点或合适时机自然地提一句，不要生硬。`;
+}
+
 // 返回注入用的上下文段落；无任何记录时返回空字符串。
 function buildUserContext(now) {
   const personaContext = safeRead(() => agentPersona.buildPersonaContext(now), '');
-  const lines = [buildBreathLine(now), buildSleepLine(), buildJournalLine(), buildMemoryLine(), personaContext].filter(Boolean);
+  const lines = [buildBreathLine(now), buildSleepLine(), buildJournalLine(), buildMemoryLine(), buildFactLine(), buildTaskLine(), personaContext].filter(Boolean);
   if (!lines.length) return '';
   return [
     '以下是用户的本地记录摘要（仅你可见）。只在相关时机自然地引用一两处，不要一次性罗列，也不要让用户感觉被监控：',

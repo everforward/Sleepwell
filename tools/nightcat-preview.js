@@ -24,7 +24,7 @@ function moduleSources() {
       else if (entry.name.endsWith('.js')) sources['/' + relative] = read(relative);
     }
   }
-  for (const folder of ['utils', 'services', 'skills']) walk(folder);
+  for (const folder of ['utils', 'services', 'experts', 'skills']) walk(folder);
   return sources;
 }
 function clientRuntime(payload) {
@@ -32,7 +32,11 @@ function clientRuntime(payload) {
   const moduleCache = {};
   let page;
   let rendering = false;
-  const app = { globalData: { audioState: { sound: 'breeze', playing: false, volume: 0.42, timerMinutes: 30 } } };
+  const app = {
+    globalData: { audioState: { sound: 'breeze', playing: false, volume: 0.42, timerMinutes: 30 } },
+    playSound(sound, url, minutes) { this.globalData.audioState = Object.assign({}, this.globalData.audioState, { sound, playing: true, timerMinutes: minutes }); },
+    pauseSound() { this.globalData.audioState = Object.assign({}, this.globalData.audioState, { playing: false }); }
+  };
   const wx = {
     getWindowInfo: () => ({ windowWidth: innerWidth, statusBarHeight: 24 }),
     getMenuButtonBoundingClientRect: () => ({ top: 32, bottom: 64, left: innerWidth - 96 }),
@@ -41,7 +45,7 @@ function clientRuntime(payload) {
     showShareMenu() {}, hideKeyboard() {}, onKeyboardHeightChange(fn) { window.keyboardListener = fn; }, offKeyboardHeightChange() {},
     navigateTo: ({ url }) => { window.lastNavigation = { type: 'navigateTo', url }; },
     reLaunch: ({ url }) => { window.lastNavigation = { type: 'reLaunch', url }; },
-    navigateBack() {}, showToast() {}
+    navigateBack() {}, showToast: (opts) => { window.lastToast = (opts && opts.title) || ''; }
   };
   function loadModule(file) {
     if (moduleCache[file]) return moduleCache[file].exports;
@@ -176,7 +180,7 @@ function preview(pageName = 'agent') {
     .replace(/(-?\d*\.?\d+)rpx/g, 'calc($1 * var(--rpx))')
     .replace(/env\(safe-area-inset-bottom\)/g, 'var(--safe-bottom)');
   const encoded = JSON.stringify(payload).replace(/</g, '\\u003c');
-  return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>夜喵</title><style>:root{--rpx:.5px;--safe-bottom:34px}html,body{margin:0;height:100%;overflow:hidden}button{cursor:pointer;border:0}img{object-fit:cover}input{outline:none}#app{height:100%}' + css + '</style></head><body><div id="app"></div><script>(' + clientRuntime.toString() + ')(' + encoded + ')</script></body></html>';
+  return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>夜喵</title><style>:root{--rpx:.5px;--safe-bottom:34px}html,body{margin:0;height:100%;overflow:hidden}button{cursor:pointer;border:0}img{object-fit:cover}input,textarea{outline:none;border:0;background:transparent}#app{height:100%}' + css + '</style></head><body><div id="app"></div><script>(' + clientRuntime.toString() + ')(' + encoded + ')</script></body></html>';
 }
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname;

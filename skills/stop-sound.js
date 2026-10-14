@@ -7,6 +7,7 @@ module.exports = {
     '参数：{"skill":"stop_sound","args":{}}'
   ].join('\n'),
   needsResult: false,
+  writes: [], // 只控制播放器，不写入本机数据
   execute() {
     const app = typeof getApp === 'function' ? getApp() : null;
     if (!app || typeof app.pauseSound !== 'function') return { ok: false, message: '当前环境暂时无法控制声音' };

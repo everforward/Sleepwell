@@ -14,8 +14,8 @@
       <button class="ns-row" hover-class="is-pressed" data-key="question" bindtap="choose"><view><text>默认引导问题</text><text class="ns-help">进入夜喵时显示的问题</text></view><text class="ns-value">{{prefs.question}} ›</text></button>
       <button class="ns-row" hover-class="is-pressed" bindtap="advanced"><text>高级设置</text><text class="ns-value">{{advanced ? '收起' : '展开'}} ›</text></button><button wx:if="{{advanced}}" class="ns-row" data-key="api" bindtap="info"><text>自定义 API</text><text class="ns-value">尚未接入 ›</text></button>
     </view>
-    <view class="ns-section"><text class="ns-section-title">夜喵的技能</text><text class="ns-help ns-section-intro">夜喵可以帮你播放声音、记日记。这里控制每个技能的执行方式。</text>
-      <button class="ns-row" hover-class="is-pressed" wx:for="{{skills}}" wx:key="name" data-name="{{item.name}}" bindtap="chooseSkillPermission"><view><text>{{item.label}}</text><text class="ns-help">{{item.help}}</text></view><text class="ns-value">{{item.permissionLabel}} ›</text></button>
+    <view class="ns-section"><text class="ns-section-title">夜喵的技能</text><text class="ns-help ns-section-intro">夜喵可以帮你播放声音、记日记。这里控制每个技能的执行方式，并标注它写入的数据范围。</text>
+      <button class="ns-row" hover-class="is-pressed" wx:for="{{skills}}" wx:key="name" data-name="{{item.name}}" bindtap="chooseSkillPermission"><view><text>{{item.label}}</text><text class="ns-help">{{item.help}}</text><text class="ns-help">{{item.scope}}</text></view><text class="ns-value">{{item.permissionLabel}} ›</text></button>
       <button class="ns-row" hover-class="is-pressed" bindtap="goMemoryFile"><view><text>夜喵的记忆档案</text><text class="ns-help">夜喵记得的你的近况</text></view><text class="ns-value">查看 ›</text></button>
     </view>
     <view wx:if="{{!fromChat}}" class="ns-section"><text class="ns-section-title">显示与提醒</text><text class="ns-subheading">显示设置</text>

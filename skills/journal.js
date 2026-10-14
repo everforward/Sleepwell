@@ -21,6 +21,7 @@ module.exports = {
     'items 用用户自己的话概括，每条不超过 24 字，最多 3 条。'
   ].join('\n'),
   needsResult: false,
+  writes: [storage.KEYS.journal],
   execute(args) {
     const items = normalizeItems(args);
     if (!items.length) return { ok: false, message: '没有听到想记下来的内容' };

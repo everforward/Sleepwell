@@ -41,8 +41,8 @@ async function measure(page) {
       topicChips: rects('.topic-chip'),
       guideButton: rect('.guide-button'),
       navItems: rects('.night-nav-item'),
-      smallTargets: rects('.topic-chip, .guide-button, .night-composer, .night-nav-item').filter((box) => box.height < minTap),
-      outsideViewport: rects('.topic-chip, .guide-button, .night-composer, .night-nav-item').filter((box) => box.left < -0.5 || box.right > innerWidth + 0.5)
+      smallTargets: rects('.topic-chip, .practice-main, .guide-button, .night-composer, .night-nav-item').filter((box) => box.height < minTap),
+      outsideViewport: rects('.topic-chip, .practice-main, .guide-button, .night-composer, .night-nav-item').filter((box) => box.left < -0.5 || box.right > innerWidth + 0.5)
     };
   }, MIN_TAP);
 }
@@ -107,6 +107,33 @@ async function main() {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(BASE);
     await page.locator('.night-composer').waitFor();
+
+    // 练习卡：默认收缩（引导按钮被裁切不可点），点按整行丝滑展开，再点收起。
+    const collapsedCard = await page.locator('.practice-card').boundingBox();
+    const collapsedClipped = await page.evaluate(() => {
+      const extra = document.querySelector('.practice-extra').getBoundingClientRect();
+      const guide = document.querySelector('.guide-button').getBoundingClientRect();
+      return extra.height < 1 && guide.top >= extra.bottom - 1;
+    });
+    if (!collapsedClipped) throw new Error('Practice card should start collapsed with the guide button clipped away');
+    await page.locator('.practice-main').click();
+    await page.locator('.practice-card.is-open').waitFor();
+    await page.waitForTimeout(420);
+    const expandedCard = await page.locator('.practice-card').boundingBox();
+    const expandedGuide = await page.locator('.guide-button').boundingBox();
+    const composerBox = await page.locator('.night-composer').boundingBox();
+    await page.screenshot({ path: path.join(root, 'docs/design/preview-practice-open.png') });
+    const practice = { collapsed: +collapsedCard.height.toFixed(1), expanded: +expandedCard.height.toFixed(1), guide: +expandedGuide.height.toFixed(1) };
+    console.log('Practice', JSON.stringify(practice));
+    if (expandedCard.height - collapsedCard.height < 30) throw new Error(`Practice card did not expand: ${collapsedCard.height} -> ${expandedCard.height}`);
+    if (expandedGuide.height < MIN_TAP) throw new Error(`Guide button under ${MIN_TAP}px when expanded: ${expandedGuide.height}`);
+    if (expandedCard.y + expandedCard.height > composerBox.y + 0.5) throw new Error('Expanded practice card overlaps the composer');
+    await page.locator('.practice-main').click();
+    await page.waitForTimeout(420);
+    const recollapsedCard = await page.locator('.practice-card').boundingBox();
+    if (await page.locator('.practice-card.is-open').count()) throw new Error('is-open class should be removed after collapsing');
+    if (Math.abs(recollapsedCard.height - collapsedCard.height) > 1) throw new Error(`Practice card did not collapse back: ${recollapsedCard.height} vs ${collapsedCard.height}`);
+
     console.log('Opening chat from composer');
     await page.getByRole('button', { name: '和夜喵说说今晚的心情' }).click();
     await page.locator('.chat-screen').waitFor();
@@ -132,7 +159,158 @@ async function main() {
     const gate = { lockedOnEntry: true, wrongCodeRejected: true, code: 'configured' };
     console.log('Gate', JSON.stringify(gate));
 
+    // 「+」面板：瘦身后的直执区（助眠练习 + 助眠声），贴底、可点、可直接执行。
+    await page.locator('.chat-plus').click();
+    await page.locator('.chat-panel.is-open').waitFor();
+    await settle(page, '.panel-inner');
+    await page.waitForTimeout(380);
+    const panelBox = await page.locator('.chat-panel').boundingBox();
+    const streamBox = await page.locator('.chat-stream').boundingBox();
+    const panelCounts = await page.evaluate(() => ({
+      titles: document.querySelectorAll('.chat-panel .panel-title').length,
+      experts: document.querySelectorAll('.chat-panel .expert-card, .chat-panel .expert-item').length,
+      skills: document.querySelectorAll('.quick-item').length,
+      sounds: document.querySelectorAll('.sound-chip').length
+    }));
+    const panelTaps = await page.evaluate((selectors) => selectors.flatMap((selector) => [...document.querySelectorAll(selector)].map((el) => {
+      const label = (el.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 12);
+      return { selector, label, height: +el.getBoundingClientRect().height.toFixed(1) };
+    })), ['.chat-plus', '.chat-panel .quick-item', '.chat-panel .sound-chip']);
+    const panelSmall = panelTaps.filter((box) => box.height < MIN_TAP);
+    await page.screenshot({ path: path.join(root, 'docs/design/preview-chat-panel.png') });
+    const panel = { titles: panelCounts.titles, experts: panelCounts.experts, skills: panelCounts.skills, sounds: panelCounts.sounds, height: +panelBox.height.toFixed(1), streamHeight: +streamBox.height.toFixed(1), bottom: +(panelBox.y + panelBox.height).toFixed(1) };
+    console.log('Panel', JSON.stringify(panel));
+    if (panelCounts.titles !== 2) throw new Error(`Slim panel should keep exactly 2 sections: ${panelCounts.titles}`);
+    if (panelCounts.experts !== 0) throw new Error(`Expert cards should live in the drawer, not the panel: ${panelCounts.experts}`);
+    if (panelCounts.skills !== 4) throw new Error(`Quick skill count unexpected: ${panelCounts.skills}`);
+    if (panelCounts.sounds !== 4) throw new Error(`Quick sound count unexpected: ${panelCounts.sounds}`);
+    if (panelBox.height > 240) throw new Error(`Panel still too tall after slim-down: ${panelBox.height}`);
+    if (panelSmall.length) throw new Error(`Panel tap target under ${MIN_TAP}px: ${JSON.stringify(panelSmall)}`);
+    if (streamBox.height < 40) throw new Error(`Chat stream squeezed by panel: ${streamBox.height}`);
+    if (Math.abs(panelBox.y + panelBox.height - 812) > 1) throw new Error(`Panel not pinned to viewport bottom: ${panelBox.y + panelBox.height}`);
+
+    // 面板直执：点「雨声」应真正播放（技能反馈气泡），面板随即收起。
+    await page.locator('.sound-chip', { hasText: '雨声' }).click();
+    await page.waitForTimeout(360);
+    const soundText = (await page.locator('.skill-feedback-text').last().innerText()).replace(/\s+/g, ' ').trim();
+    if (!soundText.includes('已为你播放雨声')) throw new Error(`Sound quick action did not execute: ${soundText}`);
+    if (await page.locator('.chat-panel.is-open').count()) throw new Error('Panel should close after a quick action');
+
+    // 右侧抽屉：专家详版 + 工具（新对话 / 对话设置）+ 安眠曲占位；贴右、全高、触控达标。
+    await page.locator('.chat-more').click();
+    await page.locator('.drawer.is-open').waitFor();
+    await settle(page, '.drawer');
+    await page.waitForTimeout(380);
+    const drawerBox = await page.locator('.drawer').boundingBox();
+    const drawerCounts = await page.evaluate(() => ({
+      experts: document.querySelectorAll('.drawer .expert-item').length,
+      actions: document.querySelectorAll('.drawer .drawer-action').length,
+      lullabies: document.querySelectorAll('.drawer .lullaby-item').length,
+      badges: document.querySelectorAll('.drawer .lullaby-badge').length,
+      channels: document.querySelectorAll('.drawer .channel-item').length,
+      chevrons: document.querySelectorAll('.drawer .channel-chevron').length,
+      tags: document.querySelectorAll('.drawer .expert-item-tag').length
+    }));
+    const drawerTaps = await page.evaluate((selectors) => selectors.flatMap((selector) => [...document.querySelectorAll(selector)].map((el) => {
+      const label = (el.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 12);
+      return { selector, label, height: +el.getBoundingClientRect().height.toFixed(1) };
+    })), ['.chat-more', '.drawer-close', '.drawer .expert-item', '.drawer .drawer-action', '.drawer .lullaby-item', '.drawer .channel-item']);
+    const drawerSmall = drawerTaps.filter((box) => box.height < MIN_TAP);
+    await page.screenshot({ path: path.join(root, 'docs/design/preview-chat-drawer.png') });
+    const drawer = { experts: drawerCounts.experts, actions: drawerCounts.actions, lullabies: drawerCounts.lullabies, channels: drawerCounts.channels, badges: drawerCounts.badges, chevrons: drawerCounts.chevrons, tags: drawerCounts.tags, width: +drawerBox.width.toFixed(1), right: +(drawerBox.x + drawerBox.width).toFixed(1) };
+    console.log('Drawer', JSON.stringify(drawer));
+    if (drawerCounts.experts !== 2) throw new Error(`Drawer expert rows unexpected: ${drawerCounts.experts}`);
+    if (drawerCounts.actions !== 2) throw new Error(`Drawer tool rows unexpected: ${drawerCounts.actions}`);
+    if (drawerCounts.lullabies !== 3) throw new Error(`Lullaby placeholders unexpected: ${drawerCounts.lullabies}`);
+    if (drawerCounts.badges !== 3) throw new Error(`Lullaby badges missing: ${drawerCounts.badges}`);
+    if (drawerCounts.channels !== 2) throw new Error(`Future channel rows unexpected: ${drawerCounts.channels}`);
+    if (drawerCounts.chevrons !== 2) throw new Error(`Channel jump chevrons missing: ${drawerCounts.chevrons}`);
+    if (drawerCounts.tags !== 1) throw new Error(`Active expert tag count unexpected: ${drawerCounts.tags}`);
+    if (drawerSmall.length) throw new Error(`Drawer tap target under ${MIN_TAP}px: ${JSON.stringify(drawerSmall)}`);
+    if (Math.abs(drawerBox.x + drawerBox.width - 375) > 1) throw new Error(`Drawer not pinned to the right edge: ${drawerBox.x + drawerBox.width}`);
+    if (Math.abs(drawerBox.y) > 0.5 || Math.abs(drawerBox.y + drawerBox.height - 812) > 1) throw new Error(`Drawer not full height: top=${drawerBox.y} bottom=${drawerBox.y + drawerBox.height}`);
+    if (drawerBox.width > 320) throw new Error(`Drawer should be a side sheet, got ${drawerBox.width}px wide`);
+
+    // 安眠曲占位：点按只回「即将上线」提示，抽屉保持展开。
+    await page.locator('.drawer .lullaby-item').first().click();
+    await page.waitForTimeout(240);
+    const lullabyToast = await page.evaluate(() => window.lastToast || '');
+    if (!lullabyToast.includes('很快上线')) throw new Error(`Lullaby placeholder toast missing: ${lullabyToast}`);
+    if (!(await page.locator('.drawer.is-open').count())) throw new Error('Drawer should stay open after a lullaby tap');
+
+    // 深夜频道占位（听书 / 电台）：点按回「正在搭建」提示，抽屉保持展开。
+    await page.locator('.drawer .channel-item').first().click();
+    await page.waitForTimeout(240);
+    const channelToast = await page.evaluate(() => window.lastToast || '');
+    if (!channelToast.includes('搭建')) throw new Error(`Channel placeholder toast missing: ${channelToast}`);
+    if (!(await page.locator('.drawer.is-open').count())) throw new Error('Drawer should stay open after a channel tap');
+
+    // 新对话：清空当前屏、从新的问候开始，抽屉随之收起。
+    await page.locator('.drawer-action', { hasText: '新对话' }).click();
+    await page.waitForFunction(() => !document.querySelector('.drawer.is-open'));
+    const fresh = await page.evaluate(() => ({
+      user: document.querySelectorAll('.chat-message--user').length,
+      agent: document.querySelectorAll('.chat-message--agent').length
+    }));
+    if (fresh.user !== 0 || fresh.agent !== 1) throw new Error(`New session did not reset the stream: ${JSON.stringify(fresh)}`);
+
+    // 咨询师视角：抽屉里选亚隆 → 胶囊出现、偏好落盘、确认气泡、抽屉收起。
+    await page.locator('.chat-more').click();
+    await page.locator('.drawer.is-open').waitFor();
+    await page.waitForTimeout(380);
+    await page.locator('.drawer .expert-item', { hasText: '亚隆' }).click();
+    await page.waitForFunction(() => !document.querySelector('.drawer.is-open'));
+    await page.locator('.expert-chip').waitFor();
+    await page.waitForTimeout(240);
+    const chipBox = await page.locator('.expert-chip').boundingBox();
+    if (chipBox.height < MIN_TAP) throw new Error(`Expert chip under ${MIN_TAP}px: ${chipBox.height}`);
+    const expertText = (await page.locator('.skill-feedback-text').last().innerText()).replace(/\s+/g, ' ').trim();
+    if (!expertText.includes('亚隆')) throw new Error(`Expert confirmation bubble missing: ${expertText}`);
+    const savedExpert = await page.evaluate(() => { try { return (JSON.parse(localStorage.getItem('sleepwell.night.preferences.v1') || '{}').expert) || ''; } catch (error) { return ''; } });
+    if (savedExpert !== 'yalom') throw new Error(`Expert preference not persisted: ${savedExpert}`);
+    await page.screenshot({ path: path.join(root, 'docs/design/preview-chat-expert.png') });
+
+    // 开场句位于抽屉：选中专家后出现，点按填入输入框并收起抽屉。
+    await page.locator('.chat-more').click();
+    await page.locator('.drawer.is-open').waitFor();
+    await settle(page, '.drawer');
+    await page.waitForTimeout(380);
+    const starterCount = await page.locator('.drawer .starter-chip').count();
+    if (starterCount !== 3) throw new Error(`Expert starters missing: ${starterCount}`);
+    const starterBox = await page.locator('.drawer .starter-chip').first().boundingBox();
+    if (starterBox.height < MIN_TAP) throw new Error(`Starter chip under ${MIN_TAP}px: ${starterBox.height}`);
+    await page.screenshot({ path: path.join(root, 'docs/design/preview-chat-drawer-starters.png') });
+    await page.locator('.drawer .starter-chip').first().click();
+    await page.waitForFunction(() => !document.querySelector('.drawer.is-open'));
+    await page.waitForTimeout(240);
+    const draftValue = await page.locator('.chat-input').inputValue();
+    if (!draftValue.trim()) throw new Error('Starter did not fill the draft');
+    await page.locator('.chat-input').fill('');
+
+    await page.locator('.expert-chip').click();
+    await page.locator('.expert-chip').waitFor({ state: 'detached' });
+    const clearedExpert = await page.evaluate(() => { try { return (JSON.parse(localStorage.getItem('sleepwell.night.preferences.v1') || '{}').expert) || ''; } catch (error) { return ''; } });
+    if (clearedExpert !== '') throw new Error(`Expert preference not cleared: ${clearedExpert}`);
+    const clearedText = (await page.locator('.skill-feedback-text').last().innerText()).replace(/\s+/g, ' ').trim();
+    if (!clearedText.includes('夜喵本体')) throw new Error(`Expert clear bubble missing: ${clearedText}`);
+
+    // 抽屉两种收起：右上 × 与点按遮罩空白区。
+    await page.locator('.chat-more').click();
+    await page.locator('.drawer.is-open').waitFor();
+    await page.waitForTimeout(380);
+    await page.locator('.drawer-close').click();
+    await page.waitForFunction(() => !document.querySelector('.drawer.is-open'));
+    await page.locator('.chat-more').click();
+    await page.locator('.drawer.is-open').waitFor();
+    await page.waitForTimeout(380);
+    await page.locator('.drawer-mask').click({ position: { x: 30, y: 400 } });
+    await page.waitForFunction(() => !document.querySelector('.drawer.is-open'));
+    const expert = { selected: 'yalom', starters: starterCount, cleared: true, lullabyToast: true, channelToast: true, newSession: true, xClose: true, maskClose: true };
+    console.log('Expert', JSON.stringify(expert));
+
     await page.locator('.chat-input').fill('今晚脑子停不下来，我想先慢慢听点雨声');
+    await page.waitForTimeout(240);
+    await page.screenshot({ path: path.join(root, 'docs/design/preview-chat-send-ready.png') });
     await page.getByRole('button', { name: '发送' }).click();
     await page.locator('.chat-end-chip').waitFor();
     await page.waitForTimeout(300);
@@ -216,7 +394,7 @@ async function main() {
     }
 
     if (errors.length) throw new Error(errors.join('\n'));
-    fs.writeFileSync(path.join(root, 'docs/design/browser-checks.json'), JSON.stringify({ checks, convo, gate, keyboardRow, secondary: secondaryReports, errors }, null, 2));
+    fs.writeFileSync(path.join(root, 'docs/design/browser-checks.json'), JSON.stringify({ checks, convo, gate, panel, drawer, expert, practice, keyboardRow, secondary: secondaryReports, errors }, null, 2));
     console.log('Browser verification passed');
   } finally { await browser.close(); }
 }

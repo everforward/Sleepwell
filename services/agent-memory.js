@@ -2,6 +2,8 @@
 // 下次对话时注入上下文并个性化开场白。摘要属于个人记录，随「清除个人记录」一起删除。
 
 const storage = require('./storage');
+const agentThoughts = require('./agent-thoughts');
+const agentReviews = require('./agent-reviews');
 
 let secrets;
 try {
@@ -11,6 +13,7 @@ try {
 }
 
 const MEMORY_LIMIT = 3;
+const FACTS_LIMIT = 10;
 const SUMMARY_MAX_CHARS = 40;
 const REQUEST_TIMEOUT_MS = 15000;
 
@@ -33,6 +36,26 @@ function remember(entry) {
   const list = recall();
   list.unshift({ at: entry.at || Date.now(), topic: entry.topic || '', summary });
   return storage.write(storage.KEYS.agentMemory, list.slice(0, MEMORY_LIMIT));
+}
+
+// 用户明确要求记住的事：长期保留，出现在 memory.md 档案里，可随「清除聊天记忆」删除。
+function facts() {
+  try {
+    const list = storage.read(storage.KEYS.agentFacts, []);
+    return Array.isArray(list) ? list : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function addFact(text, at) {
+  const fact = typeof text === 'string' ? text.trim().slice(0, SUMMARY_MAX_CHARS) : '';
+  if (!fact) return '';
+  const list = facts().filter((item) => item.text !== fact);
+  list.unshift({ at: at || Date.now(), text: fact });
+  if (!storage.write(storage.KEYS.agentFacts, list.slice(0, FACTS_LIMIT))) return '';
+  writeMemoryFile();
+  return fact;
 }
 
 function formatWhen(timestamp) {
@@ -67,9 +90,19 @@ function renderMemoryMarkdown() {
     lines.push('');
   }
   const journals = Array.isArray(storage.read(storage.KEYS.journal, [])) ? storage.read(storage.KEYS.journal, []) : [];
-  if (journals.length) {
+  const gratitude = journals.filter((entry) => entry.kind !== 'dream').slice(0, 3);
+  const dreams = journals.filter((entry) => entry.kind === 'dream').slice(0, 3);
+  if (gratitude.length) {
     lines.push('## 最近的感恩日记', '');
-    journals.slice(0, 3).forEach((entry) => {
+    gratitude.forEach((entry) => {
+      const items = (Array.isArray(entry.items) ? entry.items : []).filter(Boolean);
+      if (items.length) lines.push(`- ${entry.date || '某天'}：${items.join('；')}`);
+    });
+    lines.push('');
+  }
+  if (dreams.length) {
+    lines.push('## 最近记下的梦', '');
+    dreams.forEach((entry) => {
       const items = (Array.isArray(entry.items) ? entry.items : []).filter(Boolean);
       if (items.length) lines.push(`- ${entry.date || '某天'}：${items.join('；')}`);
     });
@@ -79,6 +112,29 @@ function renderMemoryMarkdown() {
   if (memories.length) {
     lines.push('## 我们聊过', '');
     memories.forEach((item) => lines.push(`- ${formatWhen(item.at)}：${item.summary}`));
+    lines.push('');
+  }
+  const factList = facts();
+  if (factList.length) {
+    lines.push('## 你让我记住的事', '');
+    factList.forEach((item) => lines.push(`- ${item.text}`));
+    lines.push('');
+  }
+  const parkedThoughts = agentThoughts.parked();
+  if (parkedThoughts.length) {
+    lines.push('## 你寄存在我这的心事', '');
+    parkedThoughts.forEach((item) => lines.push(`- ${item.text}`));
+    lines.push('');
+  }
+  const reviews = agentReviews.list();
+  if (reviews.length) {
+    lines.push('## 夜喵收到的评价', '');
+    reviews.slice(0, 8).forEach((item) => {
+      const label = agentReviews.valueLabel(item.value);
+      const quote = item.quote ? `「${item.quote}」` : '';
+      const reason = item.reason ? `${quote ? '——' : ''}原因：${item.reason}` : '';
+      lines.push(`- ${formatWhen(item.at)} · ${label}${quote}${reason}`);
+    });
     lines.push('');
   }
   if (lines.length <= 5) lines.push('夜喵还没有记住什么。多聊几次、多做几次练习，这里会慢慢丰富起来。');
@@ -106,9 +162,9 @@ function readMemoryFile() {
   }
 }
 
-// 仅清除对话记忆并重写档案（用户的练习/睡眠/日记记录不受影响）。
+// 仅清除对话记忆（摘要、记住的事、寄存的心事、留下的评价）并重写档案；用户的练习/睡眠/日记记录不受影响。
 function clearConversationMemory() {
-  const cleared = storage.write(storage.KEYS.agentMemory, []);
+  const cleared = storage.write(storage.KEYS.agentMemory, []) && storage.write(storage.KEYS.agentFacts, []) && storage.write(storage.KEYS.agentThoughts, []) && storage.write(storage.KEYS.agentReviews, []);
   writeMemoryFile();
   return cleared;
 }
@@ -169,4 +225,4 @@ function summarizeConversation(messages, topic, done) {
   }
 }
 
-module.exports = { recall, lastMemory, remember, summarizeConversation, buildTranscript, formatWhen, renderMemoryMarkdown, writeMemoryFile, readMemoryFile, clearConversationMemory };
+module.exports = { recall, lastMemory, remember, facts, addFact, summarizeConversation, buildTranscript, formatWhen, renderMemoryMarkdown, writeMemoryFile, readMemoryFile, clearConversationMemory };

@@ -1,0 +1,22 @@
+@import '../night-settings/index.wxss';
+
+.nd-page { display: flex; flex-direction: column; width: 100%; height: 100vh; background: linear-gradient(180deg, #020e14 0%, #061719 52%, #0a2422 100%); color: var(--night-text); }
+/* night-settings 的 .ns-page 作用域不覆盖本页，返回键样式在这里补齐 */
+.nd-page .ns-back { position: absolute; left: 16px; bottom: 4px; width: 44px; max-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.nd-page .ns-back image { width: 20px; height: 20px; }
+.nd-scroll { flex: 1; min-height: 0; }
+.nd-content { padding: 24rpx 32rpx 48rpx; }
+.nd-actions { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; padding: 0 8rpx; animation: fade-in 240ms ease-out both; }
+.nd-unread-copy { color: var(--night-muted); font-size: 13px; }
+.nd-readall { min-height: max(64rpx, 32px); padding: 0 26rpx; color: var(--night-gold); font-size: 13px; line-height: 1.5; background: rgba(236, 203, 138, .1); border: 1rpx solid rgba(236, 203, 138, .3); border-radius: 999rpx; }
+.nd-row { display: flex; gap: 18rpx; padding: 24rpx 28rpx; margin-bottom: 20rpx; border: 1rpx solid var(--night-hairline); border-radius: 24rpx; background: var(--night-panel); box-shadow: 0 10rpx 28rpx rgba(0, 0, 0, .16); animation: rise-in 280ms var(--ease-out) both; }
+.nd-row.is-unread { border-color: rgba(236, 203, 138, .38); }
+.nd-dot { flex: none; width: 14rpx; height: 14rpx; margin-top: 12rpx; border-radius: 50%; background: transparent; }
+.nd-row.is-unread .nd-dot { background: #e99898; box-shadow: 0 0 10rpx rgba(233, 152, 152, .6); }
+.nd-body { flex: 1; min-width: 0; }
+.nd-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8rpx; }
+.nd-kind { color: var(--night-gold); font-size: 12px; letter-spacing: 1rpx; }
+.nd-when { color: var(--night-faint); font-size: 11px; }
+.nd-text { display: block; color: #c9d8d3; font-size: 14px; line-height: 1.8; word-break: break-all; }
+.nd-empty { display: flex; flex-direction: column; align-items: center; gap: 10rpx; margin-top: 96rpx; color: var(--night-muted); font-size: 13px; animation: fade-in 240ms ease-out 80ms both; }
+.nd-safe-bottom { height: env(safe-area-inset-bottom); }

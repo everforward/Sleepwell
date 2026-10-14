@@ -2,6 +2,7 @@
   "pages": [
     "pages/agent/index",
     "pages/night-memory/index",
+    "pages/night-messages/index",
     "pages/record/index",
     "pages/night-settings/index",
     "pages/breathe/index",

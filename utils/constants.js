@@ -52,13 +52,29 @@ const DEFAULT_SETTINGS = {
   breathPatternVersion: 2,
   hapticEnabled: true,
   endSoundEnabled: false,
-  skillPermissions: { play_sound: 'auto', stop_sound: 'auto', journal: 'auto' }
+  skillPermissions: {
+    play_sound: 'auto',
+    stop_sound: 'auto',
+    journal: 'auto',
+    dream_log: 'auto',
+    park_thoughts: 'auto',
+    morning_checkin: 'auto',
+    bedtime_guide: 'auto',
+    bedtime_pledge: 'confirm',
+    wake_me: 'confirm',
+    remember: 'confirm'
+  }
 };
+
+// 微信订阅消息模板 ID：在小程序后台「订阅消息」申请后填入，用于自动任务的到点提醒。
+// 未配置时自动任务退化为「打开夜喵时提醒」。
+const REMINDER_TMPL_IDS = { bedtime: '', wake: '' };
 
 module.exports = {
   WORLDS,
   RHYTHMS,
   BODY_PARTS,
   CARE_MESSAGES,
-  DEFAULT_SETTINGS
+  DEFAULT_SETTINGS,
+  REMINDER_TMPL_IDS
 };

@@ -5,10 +5,31 @@ const { getNavigationMetrics } = require('../../utils/layout');
 const skillRegistry = require('../../skills/registry');
 
 const PERMISSION_LABELS = { auto: '直接执行', confirm: '每次确认', off: '停用' };
+const WRITE_LABELS = {
+  [storage.KEYS.journal]: '感恩日记与梦境',
+  [storage.KEYS.agentFacts]: '夜喵记住的事',
+  [storage.KEYS.agentThoughts]: '寄存的心事',
+  [storage.KEYS.agentTasks]: '就寝约定与唤醒'
+};
+function padHour(hour) { return `${String(hour).padStart(2, '0')}:00`; }
+// 技能的数据写入范围与可用时段，直接展示给用户，便于逐项审查。
+function scopeText(skill) {
+  const writes = Array.isArray(skill.writes) ? skill.writes : [];
+  const scope = writes.length ? `写入：${writes.map((key) => WRITE_LABELS[key] || '本机数据').join('、')}` : '不写入本机数据';
+  const windows = skill.availability && skill.availability.windows;
+  return windows && windows.length ? `${scope} · 可用时段 ${windows.map((item) => `${padHour(item.from)}-${padHour(item.to)}`).join('、')}` : scope;
+}
 const SKILL_HELP = {
   play_sound: '对话中为你播放/切换环境声',
   stop_sound: '对话中停止播放',
-  journal: '把口述的感恩内容写入日记'
+  journal: '把口述的感恩内容写入日记',
+  dream_log: '把梦说给夜喵，记进日记里',
+  park_thoughts: '睡不着时把心事先交给夜喵保管',
+  morning_checkin: '早上帮你回顾昨晚的睡眠和心事',
+  remember: '把重要的事交给夜喵记住',
+  bedtime_pledge: '和夜喵约定就寝时间，到点来喊你',
+  wake_me: '设定明早的温柔唤醒',
+  bedtime_guide: '睡不着时让夜喵带着你慢慢入睡'
 };
 const options = {
   personality: ['温柔陪伴','安静倾听','鼓励提醒','简洁高效'],
@@ -33,6 +54,7 @@ Page({
       name: skill.name,
       label: skill.label,
       help: SKILL_HELP[skill.name] || '',
+      scope: scopeText(skill),
       permission: skillRegistry.getPermission(skill.name),
       permissionLabel: PERMISSION_LABELS[skillRegistry.getPermission(skill.name)]
     }));

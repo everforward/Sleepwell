@@ -8,6 +8,6 @@
     </view>
     <button class="primary-button" bindtap="saveJournal" hover-class="is-pressed">留在今天</button>
     <text wx:if="{{saved}}" class="saved-tip">已经替你留好了。</text>
-    <view wx:if="{{savedEntries.length}}" class="past-section"><text class="past-title">之前留下的</text><view wx:for="{{savedEntries}}" wx:key="id" class="past-entry"><text class="past-date">{{item.date}}</text><text wx:for="{{item.items}}" wx:for-item="line" wx:key="*this" class="past-line">{{line}}</text></view></view>
+    <view wx:if="{{savedEntries.length}}" class="past-section"><text class="past-title">之前留下的</text><view wx:for="{{savedEntries}}" wx:key="id" class="past-entry"><text class="past-date">{{item.kind === 'dream' ? '☾ ' + item.date : item.date}}</text><text wx:for="{{item.items}}" wx:for-item="line" wx:key="*this" class="past-line">{{line}}</text></view></view>
   </view>
 </view>

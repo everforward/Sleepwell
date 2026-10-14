@@ -1,0 +1,17 @@
+<view class="nd-page">
+  <view class="ns-top" style="{{nav.topbarStyle}}"><button class="ns-back" hover-class="is-pressed" bindtap="goBack" aria-label="返回夜喵"><image src="/assets/agent/icons/arrow-left-muted.png"/></button><text>消息</text></view>
+  <scroll-view class="nd-scroll" scroll-y show-scrollbar="{{false}}">
+    <view class="nd-content">
+      <view wx:if="{{unread > 0}}" class="nd-actions"><text class="nd-unread-copy">{{unread}} 条未读</text><button class="nd-readall" bindtap="markAllRead" hover-class="is-pressed">全部已读</button></view>
+      <view wx:for="{{messages}}" wx:key="id" class="nd-row {{item.read ? '' : 'is-unread'}}" data-id="{{item.id}}" bindtap="openMessage" hover-class="is-pressed" aria-role="button" aria-label="{{item.kindLabel}}：{{item.text}}">
+        <view class="nd-dot"></view>
+        <view class="nd-body">
+          <view class="nd-meta"><text class="nd-kind">{{item.kindLabel}}</text><text class="nd-when">{{item.when}}</text></view>
+          <text class="nd-text" user-select>{{item.text}}</text>
+        </view>
+      </view>
+      <view wx:if="{{!messages.length}}" class="nd-empty"><text>还没有消息。</text><text>到点的就寝与唤醒提醒会出现在这里。</text></view>
+      <view class="nd-safe-bottom"></view>
+    </view>
+  </scroll-view>
+</view>

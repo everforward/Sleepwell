@@ -42,7 +42,7 @@ Page({
   clearRecords() {
     wx.showModal({
       title: '清除个人记录？',
-      content: '呼吸、感恩日记、睡眠记录和对话记忆会从本机删除，偏好设置会保留。',
+      content: '呼吸、感恩日记、睡眠记录、对话记忆和消息会从本机删除，偏好设置会保留。',
       confirmText: '清除',
       confirmColor: '#b87878',
       success: (result) => {

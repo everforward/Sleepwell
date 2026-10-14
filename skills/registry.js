@@ -3,7 +3,18 @@
 
 const storage = require('../services/storage');
 
-const DEFINITIONS = [require('./play-sound'), require('./stop-sound'), require('./journal')];
+const DEFINITIONS = [
+  require('./play-sound'),
+  require('./stop-sound'),
+  require('./journal'),
+  require('./dream-log'),
+  require('./park-thoughts'),
+  require('./morning-checkin'),
+  require('./remember'),
+  require('./bedtime-pledge'),
+  require('./wake-me'),
+  require('./bedtime-guide')
+];
 
 const DO_MARKER = '@@DO@@';
 
@@ -76,27 +87,41 @@ function parseSkillCall(text) {
   }
 }
 
-// 执行技能（权限应已由调用方确认）。返回 { status, message }。
-// status: executed / needConfirm / off / unknown / failed
-function run(call) {
+// 可用性边界：技能可声明开放时段（from/to 为小时，from > to 表示跨午夜）。
+function withinWindow(skill, nowMs) {
+  const availability = skill.availability;
+  if (!availability || !availability.windows || !availability.windows.length) return true;
+  const hour = new Date(nowMs || Date.now()).getHours();
+  return availability.windows.some((item) => (
+    item.from <= item.to ? hour >= item.from && hour < item.to : hour >= item.from || hour < item.to
+  ));
+}
+
+function unavailableOutcome(skill) {
+  const outside = skill.availability && skill.availability.outside;
+  return { status: 'unavailable', message: outside || '现在还不适合做这个，晚一点再来找我吧。' };
+}
+
+// 执行技能（权限应已由调用方确认）。返回 { status, message, followups, action }。
+// status: executed / needConfirm / off / unknown / failed / unavailable
+function run(call, nowMs) {
   if (!call || !call.skill) return { status: 'unknown', message: '' };
   const skill = byName(call.skill);
   if (!skill) return { status: 'unknown', message: '' };
   const permission = getPermission(call.skill);
   if (permission === 'off') return { status: 'off', message: '这个能力已停用，可在设置中开启' };
+  if (!withinWindow(skill, nowMs)) return unavailableOutcome(skill);
   if (permission === 'confirm') return { status: 'needConfirm', message: '' };
-  const outcome = skill.execute(call.args);
-  return outcome && outcome.ok
-    ? { status: 'executed', message: outcome.message }
-    : { status: 'failed', message: (outcome && outcome.message) || '执行没有成功' };
+  return executeNow(call, nowMs);
 }
 
-function executeNow(call) {
+function executeNow(call, nowMs) {
   const skill = byName(call && call.skill);
   if (!skill) return { status: 'unknown', message: '' };
+  if (!withinWindow(skill, nowMs)) return unavailableOutcome(skill);
   const outcome = skill.execute(call.args);
   return outcome && outcome.ok
-    ? { status: 'executed', message: outcome.message }
+    ? { status: 'executed', message: outcome.message, followups: outcome.followups || null, action: outcome.action || null }
     : { status: 'failed', message: (outcome && outcome.message) || '执行没有成功' };
 }
 

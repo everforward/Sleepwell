@@ -12,6 +12,7 @@ module.exports = {
     'minutes 只能取 15、30、60；用户提到吵、噪音、室友时优先 white；切换声音时再次调用本技能即可。'
   ].join('\n'),
   needsResult: false,
+  writes: [], // 只控制播放器，不写入本机数据
   execute(args) {
     const app = typeof getApp === 'function' ? getApp() : null;
     if (!app || typeof app.playSound !== 'function') return { ok: false, message: '当前环境暂时无法播放声音' };

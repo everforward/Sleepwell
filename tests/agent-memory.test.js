@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const storage = require('../services/storage');
 const agentMemory = require('../services/agent-memory');
+const agentReviews = require('../services/agent-reviews');
 
 function withStorage(store, fn) {
   const original = global.wx;
@@ -114,7 +115,8 @@ test('renderMemoryMarkdown builds a readable archive from all record types', () 
     [storage.KEYS.sessions]: [{ id: 'a', startedAt: now, cycles: 6, completed: true, outcome: 'relieved' }],
     [storage.KEYS.sleep]: [{ nightDate: '2026-10-11', bedTime: '23:30', wakeTime: '07:10', duration: '7小时40分', feeling: 4 }],
     [storage.KEYS.journal]: [{ date: '10月11日', items: ['晚霞很好看'] }],
-    [storage.KEYS.agentMemory]: [{ at: now, topic: 'exam', summary: '因考试焦虑而失眠' }]
+    [storage.KEYS.agentMemory]: [{ at: now, topic: 'exam', summary: '因考试焦虑而失眠' }],
+    [storage.KEYS.agentThoughts]: [{ at: now, text: '明天的组会汇报' }]
   }, () => {
     const md = agentMemory.renderMemoryMarkdown();
     assert.ok(md.indexOf('# 夜喵的记忆') === 0);
@@ -123,6 +125,23 @@ test('renderMemoryMarkdown builds a readable archive from all record types', () 
     assert.ok(md.indexOf('晚霞很好看') !== -1);
     assert.ok(md.indexOf('因考试焦虑而失眠') !== -1);
     assert.ok(md.indexOf('我们聊过') !== -1);
+    assert.ok(md.indexOf('你寄存在我这的心事') !== -1);
+    assert.ok(md.indexOf('明天的组会汇报') !== -1);
+  });
+});
+
+test('renderMemoryMarkdown lists received reviews with vote, quote and reason', () => {
+  const at = new Date('2026-10-11T22:00:00').getTime();
+  withStorage({
+    [storage.KEYS.agentReviews]: [
+      { messageId: 'm1', value: 'dislike', reason: '有点说教', quote: '早点休息哦', at },
+      { messageId: 'm2', value: 'like', reason: '', quote: '我在的', at }
+    ]
+  }, () => {
+    const md = agentMemory.renderMemoryMarkdown();
+    assert.ok(md.indexOf('## 夜喵收到的评价') !== -1);
+    assert.ok(md.indexOf('10月11日 · 踩「早点休息哦」——原因：有点说教') !== -1);
+    assert.ok(md.indexOf('10月11日 · 赞「我在的」') !== -1);
   });
 });
 
@@ -137,9 +156,11 @@ test('writeMemoryFile and clearConversationMemory degrade without a filesystem',
   withStorage({}, () => {
     assert.equal(agentMemory.writeMemoryFile(), false); // 无 getFileSystemManager
     assert.equal(agentMemory.readMemoryFile(), '');
-    // clearConversationMemory 在无文件系统时仍清除 storage 记忆
+    // clearConversationMemory 在无文件系统时仍清除 storage 记忆（摘要与评价一起清）
     agentMemory.remember({ at: 1, summary: '一次对话' });
+    agentReviews.upsert({ messageId: 'm1', value: 'like', quote: '好' });
     assert.equal(agentMemory.clearConversationMemory(), true);
     assert.equal(agentMemory.recall().length, 0);
+    assert.equal(agentReviews.list().length, 0);
   });
 });

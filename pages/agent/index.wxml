@@ -7,7 +7,8 @@
         <view class="night-heading" style="padding-top: {{nav.navigationBottom}}px;">
           <view class="heading-row">
             <text class="night-title">夜喵</text>
-            <text class="night-subtitle">夜喵，你的 AI 睡前陪伴助手</text>
+            <text class="night-subtitle">你的 AI 睡前陪伴</text>
+            <button class="night-settings night-messages" bindtap="openMessages" hover-class="is-pressed" aria-label="消息"><view class="night-bell"></view><view wx:if="{{messageBadge > 0}}" class="night-badge">{{messageBadge > 99 ? '99+' : messageBadge}}</view></button>
             <button wx:if="{{homeState === 'initial'}}" class="night-settings" bindtap="openSettings" hover-class="is-pressed" aria-label="设置"><image src="/assets/agent/icons/settings.png"></image></button>
             <button wx:else class="night-settings" bindtap="openChatSettings" aria-label="对话设置"><image src="/assets/agent/icons/settings.png"/></button>
           </view>
@@ -26,10 +27,15 @@
             <image class="topic-icon" src="/assets/agent/icons/{{item.icon}}.png"></image><text class="topic-label">{{item.label}}</text><view class="topic-chevron"></view>
           </button>
         </view>
-        <view wx:if="{{homeState === 'initial'}}" class="practice-card">
-          <image class="practice-cover" src="/assets/agent/moon-lake.jpg" mode="aspectFill" aria-hidden="{{true}}"></image>
-          <view class="practice-copy"><text class="practice-title">今晚适合你的练习</text><text class="practice-detail">5 分钟 · 轻柔呼吸与思绪放松</text></view>
-          <button class="guide-button" bindtap="startGuide" hover-class="is-pressed"><text>开始引导</text><view class="guide-chevron"></view></button>
+        <view wx:if="{{homeState === 'initial'}}" class="practice-card {{practiceOpen ? 'is-open' : ''}}">
+          <view class="practice-main" bindtap="togglePractice" hover-class="is-soft-pressed" aria-role="button" aria-label="今晚适合你的练习，轻点{{practiceOpen ? '收起' : '展开'}}">
+            <image class="practice-cover" src="/assets/agent/moon-lake.jpg" mode="aspectFill" aria-hidden="{{true}}"></image>
+            <view class="practice-copy"><text class="practice-title">今晚适合你的练习</text><text class="practice-detail">5 分钟 · 轻柔呼吸与思绪放松</text></view>
+            <view class="practice-toggle"></view>
+          </view>
+          <view class="practice-extra">
+            <button class="guide-button" bindtap="startGuide" hover-class="is-pressed"><text>开始引导</text><view class="guide-chevron"></view></button>
+          </view>
         </view>
       </view>
     </view>
@@ -46,12 +52,12 @@
   </view>
   <view wx:if="{{homeState !== 'initial'}}" class="chat-screen" style="padding-top: {{nav.navigationBottom}}px; bottom: {{keyboardHeight}}px;">
     <view class="chat-heading">
-      <button class="chat-back" bindtap="closeChat" hover-class="is-pressed" aria-label="返回夜喵首页"><image src="/assets/agent/icons/arrow-left-muted.png"></image></button>
+      <button class="chat-back" bindtap="closeChat" hover-class="is-pressed" aria-label="返回夜喵首页"><image src="{{icons.back}}"></image></button>
       <view class="chat-title-block">
         <text class="chat-title">夜喵</text>
         <view class="agent-status agent-status--{{streamState}}"><view class="status-dot"></view><text>{{streamState === 'listening' ? '聆听中' : streamState === 'streaming' ? '回复中' : '在线'}}</text></view>
       </view>
-      <button class="chat-settings" bindtap="openChatSettings" hover-class="is-pressed" aria-label="对话设置"><image src="/assets/agent/icons/settings.png"></image></button>
+      <button class="chat-more" bindtap="toggleDrawer" hover-class="is-pressed" aria-label="更多功能"><image src="{{icons.dots}}"></image></button>
     </view>
     <scroll-view class="chat-stream" scroll-y scroll-into-view="{{scrollAnchor}}" scroll-with-animation="{{chatState !== 'sending'}}" show-scrollbar="{{false}}">
       <view class="chat-stream-inner">
@@ -67,14 +73,54 @@
               <button class="skill-confirm-no" data-id="{{item.id}}" bindtap="cancelSkill" hover-class="is-pressed">取消</button>
             </view>
           </view>
+          <view wx:elif="{{item.role === 'skill-action'}}" class="skill-confirm-card">
+            <text class="skill-confirm-text">{{item.text}}</text>
+            <view class="skill-confirm-actions">
+              <button class="skill-confirm-yes" data-id="{{item.id}}" bindtap="subscribeSkill" hover-class="is-pressed">开启微信提醒</button>
+              <button class="skill-confirm-no" data-id="{{item.id}}" bindtap="dismissAction" hover-class="is-pressed">先不用</button>
+            </view>
+          </view>
           <view wx:else class="chat-message chat-message--{{item.role}}">
             <text class="chat-speaker">{{item.role === 'agent' ? '夜喵' : '你'}}</text>
             <view class="chat-bubble"><text>{{item.text || '…'}}</text><text wx:if="{{item.role === 'agent' && item.text && !item.done}}" class="stream-caret">▍</text></view>
-            <view wx:if="{{item.role === 'agent' && item.done}}" class="msg-actions">
-              <button class="msg-act {{item.feedback === 'like' ? 'is-like' : ''}}" data-id="{{item.id}}" data-value="like" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="赞同"><image src="{{item.feedback === 'like' ? icons.likeActive : icons.like}}"/></button>
-              <button class="msg-act {{item.feedback === 'dislike' ? 'is-dislike' : ''}}" data-id="{{item.id}}" data-value="dislike" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="不满意"><image src="{{item.feedback === 'dislike' ? icons.dislikeActive : icons.dislike}}"/></button>
-              <button class="msg-act" data-id="{{item.id}}" bindtap="copyMessage" hover-class="is-act-pressed" aria-label="复制"><image src="{{icons.copy}}"/></button>
-              <button wx:if="{{item.id === lastAgentId && chatState !== 'sending'}}" class="msg-act" bindtap="regenerate" hover-class="is-act-pressed" aria-label="重新生成"><image src="{{icons.regenerate}}"/></button>
+            <view wx:if="{{item.role === 'agent' && item.done && item.push && item.push.length}}" class="push-tray">
+              <scroll-view class="push-scroll" scroll-x show-scrollbar="{{false}}">
+                <view class="push-row">
+                  <view wx:for="{{item.push}}" wx:for-item="card" wx:for-index="cardIndex" wx:key="id" class="push-card" data-id="{{item.id}}" data-index="{{cardIndex}}" bindtap="tapPushCard" hover-class="is-pressed" aria-role="button" aria-label="推荐：{{card.title}}，{{card.actionLabel}}">
+                    <view class="push-cover {{card.kind === 'feature' ? 'is-glyph' : ''}}">
+                      <image wx:if="{{card.kind === 'feature'}}" class="push-glyph" src="{{card.cover}}" mode="aspectFit"></image>
+                      <image wx:else class="push-photo" src="{{card.cover}}" mode="aspectFill"></image>
+                    </view>
+                    <view class="push-body">
+                      <text class="push-title">{{card.title}}</text>
+                      <text class="push-detail">{{card.detail}}</text>
+                      <view class="push-foot">
+                        <text class="push-tag">{{card.tag}}</text>
+                        <text class="push-action">{{card.actionLabel}}</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </scroll-view>
+            </view>
+            <view wx:if="{{item.role === 'agent' && item.done && item.ask}}" class="ask-block">
+              <text class="ask-question">{{item.ask.question}}</text>
+              <view class="ask-options">
+                <button wx:for="{{item.ask.options}}" wx:for-item="option" wx:for-index="optionIndex" wx:key="*this" class="ask-chip {{item.ask.done === option ? 'is-chosen' : ''}} {{item.ask.done && item.ask.done !== option ? 'is-dim' : ''}}" disabled="{{!!item.ask.done}}" data-id="{{item.id}}" data-index="{{optionIndex}}" bindtap="answerAsk" hover-class="is-pressed">{{option}}</button>
+              </view>
+            </view>
+            <view wx:if="{{item.role === 'agent' && item.done}}" class="msg-block">
+              <view class="msg-actions">
+                <button class="msg-act" data-id="{{item.id}}" bindtap="copyMessage" hover-class="is-act-pressed" aria-label="复制"><image src="{{icons.copy}}"/></button>
+                <button class="msg-act {{item.feedback === 'like' ? 'is-like' : ''}}" data-id="{{item.id}}" data-value="like" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="赞同"><image src="{{item.feedback === 'like' ? icons.likeActive : icons.like}}"/></button>
+                <button class="msg-act {{item.feedback === 'dislike' ? 'is-dislike' : ''}}" data-id="{{item.id}}" data-value="dislike" bindtap="setFeedback" hover-class="is-act-pressed" aria-label="不满意"><image src="{{item.feedback === 'dislike' ? icons.dislikeActive : icons.dislike}}"/></button>
+                <button wx:if="{{item.id === lastAgentId && chatState !== 'sending'}}" class="msg-act" data-id="{{item.id}}" bindtap="regenerate" hover-class="is-act-pressed" aria-label="重新生成"><image src="{{icons.regenerate}}"/></button>
+                <button class="msg-act {{menuForId === item.id ? 'is-open' : ''}}" data-id="{{item.id}}" bindtap="openMessageMenu" hover-class="is-act-pressed" aria-label="更多操作"><image src="{{icons.dots}}"/></button>
+              </view>
+              <view wx:if="{{menuForId === item.id}}" class="msg-menu">
+                <view class="msg-menu-item" data-id="{{item.id}}" bindtap="openReview" hover-class="is-soft-pressed" aria-role="button">{{item.feedback === 'like' ? '说说为什么赞' : item.feedback === 'dislike' ? '说说为什么踩' : '给这条回复留句话'}}</view>
+                <view class="msg-menu-item" bindtap="openMemory" hover-class="is-soft-pressed" aria-role="button">看看夜喵的记忆<text class="msg-menu-arrow">›</text></view>
+              </view>
             </view>
           </view>
         </block>
@@ -108,11 +154,108 @@
         <view id="conversation-end-a" class="conversation-end"></view><view id="conversation-end-b" class="conversation-end"></view>
       </view>
     </scroll-view>
-    <view class="chat-input-row">
-      <view class="chat-input-wrap {{inputFocus ? 'is-focused' : ''}}">
+    <view wx:if="{{activeExpert}}" class="expert-chip" bindtap="clearExpert" hover-class="is-soft-pressed" aria-role="button" aria-label="当前是{{activeExpertLabel}}视角，点按切回夜喵本体">
+      <image class="expert-chip-emblem" src="{{activeExpertEmblem}}"></image>
+      <text>{{activeExpertLabel}}视角陪伴中 · 点按切回</text>
+    </view>
+    <view class="chat-input-row {{panelOpen ? 'is-panel' : ''}}">
+      <view class="chat-input-wrap {{inputFocus ? 'is-focused' : ''}} {{sendEcho ? 'is-echo-' + sendEcho : ''}}">
+        <view class="chat-plus {{panelOpen ? 'is-open' : ''}}" bindtap="togglePanel" hover-class="is-soft-pressed" aria-role="button" aria-label="{{panelOpen ? '收起面板' : '助眠面板：练习与声音'}}"><image src="{{icons.plus}}"></image></view>
         <input class="chat-input" value="{{draft}}" placeholder="继续和夜喵说说…" placeholder-class="chat-placeholder" maxlength="500" confirm-type="send" adjust-position="{{false}}" focus="{{inputFocus}}" bindinput="onDraftChange" bindconfirm="sendMessage" bindfocus="onInputFocus" bindblur="onInputBlur"/>
         <button wx:if="{{chatState === 'sending'}}" class="chat-stop" bindtap="stopGeneration" hover-class="is-act-pressed" aria-label="停止生成"><image src="{{icons.stop}}"></image></button>
-        <button wx:else class="chat-send {{canSend ? 'is-ready' : ''}}" disabled="{{!canSend}}" bindtap="sendMessage" aria-label="发送"><image src="/assets/agent/icons/arrow-up-dark.png"></image></button>
+        <button wx:else class="chat-send {{canSend ? 'is-ready' : ''}}" disabled="{{!canSend}}" bindtap="sendMessage" aria-label="发送"><image src="{{canSend ? icons.sendInk : icons.sendMuted}}"></image></button>
+      </view>
+    </view>
+    <view class="chat-panel {{panelOpen ? 'is-open' : ''}}">
+      <view class="panel-inner">
+        <view class="panel-title"><text>助眠练习</text><text class="panel-hint">点一下就开始</text></view>
+        <view class="quick-row">
+          <view wx:for="{{quickSkills}}" wx:key="key" class="quick-item" data-key="{{item.key}}" bindtap="quickSkill" hover-class="is-pressed" aria-role="button" aria-label="{{item.label}}">
+            <image class="quick-icon" src="{{icons[item.icon]}}"></image><text class="quick-label">{{item.label}}</text>
+          </view>
+        </view>
+        <view class="panel-title"><text>助眠声</text><text class="panel-hint">30 分钟定时</text></view>
+        <view class="quick-row">
+          <view wx:for="{{quickSounds}}" wx:key="key" class="sound-chip" data-key="{{item.key}}" bindtap="quickSkill" hover-class="is-pressed" aria-role="button" aria-label="播放{{item.label}}">
+            <image src="{{icons[item.icon]}}"></image><text>{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{drawerOpen}}" class="drawer-mask" bindtap="closeDrawer"></view>
+    <view class="drawer {{drawerOpen ? 'is-open' : ''}}" style="padding-top: {{nav.navigationBottom}}px;">
+      <view class="drawer-head">
+        <view class="drawer-heading">
+          <text class="drawer-title">更多</text>
+          <text class="drawer-sub">视角 · 内容 · 工具</text>
+        </view>
+        <view class="drawer-close" bindtap="closeDrawer" hover-class="is-soft-pressed" aria-role="button" aria-label="收起更多">
+          <image src="{{icons.close}}"></image>
+        </view>
+      </view>
+      <scroll-view class="drawer-body" scroll-y show-scrollbar="{{false}}">
+        <view class="drawer-section"><text>咨询师能力</text><text class="drawer-hint">换一种视角陪你聊</text></view>
+        <view class="expert-list">
+          <view class="expert-item {{activeExpert === '' ? 'is-active' : ''}}" data-name="" bindtap="chooseExpert" hover-class="is-pressed" aria-role="button" aria-label="夜喵本体">
+            <view class="expert-item-emblem"><image src="{{icons.emblemStar}}"></image></view>
+            <view class="expert-item-copy">
+              <text class="expert-item-label">夜喵本体</text>
+              <text class="expert-item-title">温柔陪伴的默认形态</text>
+            </view>
+            <text wx:if="{{activeExpert === ''}}" class="expert-item-tag">当前</text>
+          </view>
+          <view wx:for="{{expertCards}}" wx:key="name" class="expert-item {{activeExpert === item.name ? 'is-active' : ''}}" data-name="{{item.name}}" bindtap="chooseExpert" hover-class="is-pressed" aria-role="button" aria-label="{{item.title}}">
+            <view class="expert-item-emblem"><image src="{{item.emblem}}"></image></view>
+            <view class="expert-item-copy">
+              <text class="expert-item-label">{{item.label}}</text>
+              <text class="expert-item-title">{{item.title}}</text>
+              <text class="expert-item-intro">{{item.intro}}</text>
+            </view>
+            <text wx:if="{{activeExpert === item.name}}" class="expert-item-tag">当前</text>
+          </view>
+        </view>
+        <view wx:if="{{starters.length}}" class="starter-row">
+          <view wx:for="{{starters}}" wx:key="*this" class="starter-chip" data-text="{{item}}" bindtap="useStarter" hover-class="is-pressed" aria-role="button" aria-label="用这句开场：{{item}}">{{item}}</view>
+        </view>
+        <view class="drawer-section"><text>安眠曲</text><text class="drawer-hint">即将上线</text></view>
+        <view class="lullaby-list">
+          <view wx:for="{{lullabies}}" wx:key="key" class="lullaby-item" data-title="{{item.title}}" bindtap="tapLullaby" hover-class="is-pressed" aria-role="button" aria-label="{{item.title}}，即将上线">
+            <image class="lullaby-icon" src="{{icons.lullaby}}"></image>
+            <text class="lullaby-label">{{item.title}}</text>
+            <text class="lullaby-badge">即将上线</text>
+          </view>
+        </view>
+        <view class="drawer-section"><text>深夜频道</text><text class="drawer-hint">陆续上线</text></view>
+        <view class="channel-list">
+          <view wx:for="{{channels}}" wx:key="key" class="channel-item" data-title="{{item.title}}" bindtap="tapChannel" hover-class="is-pressed" aria-role="button" aria-label="{{item.title}}，正在搭建">
+            <image class="channel-icon" src="{{icons[item.icon]}}"></image>
+            <view class="channel-copy"><text class="channel-label">{{item.title}}</text><text class="channel-hint">{{item.hint}}</text></view>
+            <text class="channel-badge">搭建中</text>
+            <image class="channel-chevron" src="{{icons.chevron}}"></image>
+          </view>
+        </view>
+        <view class="drawer-section"><text>工具</text></view>
+        <view class="drawer-actions">
+          <view class="drawer-action" bindtap="startNewSession" hover-class="is-pressed" aria-role="button" aria-label="新对话">
+            <image src="{{icons.newChat}}"></image>
+            <view class="drawer-action-copy"><text class="drawer-action-label">新对话</text><text class="drawer-action-hint">清空这一屏，从新的问候开始</text></view>
+          </view>
+          <view class="drawer-action" bindtap="openChatSettings" hover-class="is-pressed" aria-role="button" aria-label="对话设置">
+            <image src="{{icons.tune}}"></image>
+            <view class="drawer-action-copy"><text class="drawer-action-label">对话设置</text><text class="drawer-action-hint">记忆、提醒与显示</text></view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    <view wx:if="{{reviewForId}}" class="review-mask" bindtap="closeReview"></view>
+    <view class="review-sheet {{reviewForId ? 'is-open' : ''}}" style="bottom: {{keyboardHeight}}px;">
+      <text class="review-title">{{reviewVote === 'like' ? '说说为什么觉得好' : reviewVote === 'dislike' ? '说说哪里不太对' : '给这条回复留句话'}}</text>
+      <text class="review-quote">「{{reviewQuote}}」</text>
+      <textarea class="review-input" value="{{reviewDraft}}" placeholder="{{reviewVote === 'dislike' ? '哪里不舒服，夜喵会记下来' : '想对夜喵说的，会写进 memory.md'}}" placeholder-class="chat-placeholder" maxlength="60" auto-height show-confirm-bar="{{false}}" adjust-position="{{false}}" bindinput="onReviewInput"></textarea>
+      <text class="review-count">{{reviewDraft.length}}/60</text>
+      <view class="review-foot">
+        <button class="review-cancel" bindtap="closeReview" hover-class="is-pressed">先不说</button>
+        <button class="review-save {{canSubmitReview ? 'is-ready' : ''}}" disabled="{{!canSubmitReview}}" bindtap="submitReview" hover-class="is-pressed">{{reviewDraft ? '记到记忆里' : reviewHadReason ? '删掉这句话' : '记到记忆里'}}</button>
       </view>
     </view>
   </view>

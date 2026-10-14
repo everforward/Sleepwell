@@ -7,6 +7,11 @@ const KEYS = {
   sleep: 'sleepwell.sleep.v1',
   agentMemory: 'sleepwell.agent-memory.v1',
   agentFeedback: 'sleepwell.agent-feedback.v1',
+  agentTasks: 'sleepwell.agent-tasks.v1',
+  agentFacts: 'sleepwell.agent-facts.v1',
+  agentThoughts: 'sleepwell.agent-thoughts.v1',
+  agentMessages: 'sleepwell.agent-messages.v1',
+  agentReviews: 'sleepwell.agent-reviews.v1',
   accessCode: 'sleepwell.access-code.v1'
 };
 
@@ -31,6 +36,8 @@ function write(key, value) {
 function getSettings() {
   const stored = read(KEYS.settings, {});
   const next = Object.assign({}, DEFAULT_SETTINGS, stored);
+  // 技能权限逐项合并：老用户保存过的选择保留，新技能的出厂默认也能生效。
+  next.skillPermissions = Object.assign({}, DEFAULT_SETTINGS.skillPermissions, stored.skillPermissions || {});
   if (stored.breathPatternVersion !== 2) {
     if (!stored.rhythm || stored.rhythm === 'soothe') Object.assign(next, { rhythm: '478', inhaleSeconds: 4, holdSeconds: 7, exhaleSeconds: 8 });
     next.breathPatternVersion = 2;
@@ -111,7 +118,7 @@ function getSevenDaySummary(now, sessions) {
 }
 
 function clearPersonalRecords() {
-  const results = [write(KEYS.sessions, []), write(KEYS.journal, []), write(KEYS.sleep, []), write(KEYS.agentMemory, []), write(KEYS.agentFeedback, [])];
+  const results = [write(KEYS.sessions, []), write(KEYS.journal, []), write(KEYS.sleep, []), write(KEYS.agentMemory, []), write(KEYS.agentFeedback, []), write(KEYS.agentTasks, []), write(KEYS.agentFacts, []), write(KEYS.agentThoughts, []), write(KEYS.agentMessages, []), write(KEYS.agentReviews, [])];
   return results.every(Boolean);
 }
 
