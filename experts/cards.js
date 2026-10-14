@@ -33,6 +33,8 @@ module.exports = {
       "论文｜死亡焦虑与精神疾病严重度（Menzies 等，BJCP 58(4)，2019）",
       "论文｜团体心理治疗临床实践指南（Bernard 等，IJGP 58(4)，2008）",
       "论文｜团体与个别治疗结局 25 年元分析（Burlingame 等，Psychotherapy 53(4)，2016）",
+      "访谈｜\"Regarding Rollo May: Interview with Irvin Yalom\"（Existential Analysis 6(2)，1995）",
+      "访谈｜\"Group Psychotherapy and Existential Concerns: An Interview with Irvin Yalom\"（J. Contemporary Psychotherapy 35(2)，2005）",
       "访谈｜《New Statesman》\"The confessions of Irvin Yalom\"（2025-04）",
       "纪录片｜《Yalom's Cure》（2014）",
       "官网｜yalom.com"
